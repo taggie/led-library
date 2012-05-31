@@ -1,0 +1,63 @@
+#######################################
+# Syntax Coloring Map For LED
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+ #######################################
+
+LED	KEYWORD1
+Cct	KEYWORD1
+RGB	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+update	KEYWORD2
+setIntensity	KEYWORD2
+setX	KEYWORD2
+setY	KEYWORD2
+setPosition	KEYWORD2
+setChannel	KEYWORD2
+toggle	KEYWORD2
+setToggle	KEYWORD2
+intensityTo	KEYWORD2
+cctTo	KEYWORD2
+rgbTo	KEYWORD2
+hsbTo	KEYWORD2
+hueTo	KEYWORD2
+saturationTo	KEYWORD2
+intensityFromTo	KEYWORD2
+moveTo	KEYWORD2
+setAnimationType	KEYWORD2
+isOn	KEYWORD2
+isOff	KEYWORD2
+isAnimating	KEYWORD2
+getChannel	KEYWORD2
+getChannelWarm	KEYWORD2
+getChannelCool	KEYWORD2
+getChannelRed	KEYWORD2
+getChannelGreen	KEYWORD2
+getChannelBlue	KEYWORD2
+getIntensity	KEYWORD2
+getCct	KEYWORD2
+getIntensityWarm	KEYWORD2
+getIntensityCool	KEYWORD2
+getRed	KEYWORD2
+getGreen	KEYWORD2
+getBlue	KEYWORD2
+getHue	KEYWORD2
+getSaturation	KEYWORD2
+getX	KEYWORD2
+getY	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+LINEAR	LITERAL1
+QUADRATIC	LITERAL1
+EXPONENTIAL	LITERAL1
+CIRCULAR	LITERAL1
+SINUS	LITERAL1
