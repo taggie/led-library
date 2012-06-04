@@ -1,5 +1,5 @@
 /**
- * RGB.h
+ * ColorLamp.h
  * 
  * Copyright (c) 2011 
  
@@ -15,16 +15,15 @@
 
 #include "LED.h"
 
-class RGB:public LED
+class ColorLamp:public LED
 {
   public:
-  	
-    RGB();
-	RGB( uint16_t channelRed );
-	RGB( uint16_t channelRed , bool autoWrite );
-    RGB( uint16_t channelRed , uint16_t channelGreen , uint16_t channelBlue , bool autoWrite );
-	RGB( uint16_t channelRed , uint16_t channelGreen , uint16_t channelBlue , bool autoWrite , uint16_t x, uint16_t y );
-    ~RGB();
+    ColorLamp();
+	ColorLamp( uint16_t channelRed );
+	ColorLamp( uint16_t channelRed , bool autoWrite );
+    ColorLamp( uint16_t channelRed , uint16_t channelGreen , uint16_t channelBlue , bool autoWrite );
+	ColorLamp( uint16_t channelRed , uint16_t channelGreen , uint16_t channelBlue , bool autoWrite , uint16_t x, uint16_t y );
+    ~ColorLamp();
     
 	void update();
     void rgbTo( uint8_t r, uint8_t g, uint8_t b );
@@ -33,7 +32,7 @@ class RGB:public LED
 	void hsbTo( uint8_t h, uint8_t s, uint8_t b , uint32_t duration);
 	void hueTo( uint8_t hTo,  		uint32_t duration = DEFAULT_DURATION);
 	void saturationTo( uint8_t sTo, uint32_t duration = DEFAULT_DURATION);
-	void intensityTo(uint8_t to, 		uint32_t duration = DEFAULT_DURATION);
+	void intensityTo(uint8_t to, 	uint32_t duration = DEFAULT_DURATION);
 	
 	uint8_t getRed();
 	uint8_t getGreen();

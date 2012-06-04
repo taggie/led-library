@@ -7,8 +7,8 @@
  #######################################
 
 LED	KEYWORD1
-Cct	KEYWORD1
-RGB	KEYWORD1
+CctLamp	KEYWORD1
+ColorLamp	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

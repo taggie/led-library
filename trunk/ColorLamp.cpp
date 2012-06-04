@@ -1,5 +1,5 @@
 /**
- * RGB.h
+ * ColorLamp.h
  * 
  * Copyright (c) 2011 
  
@@ -9,11 +9,11 @@
  *
  * All rights reserved. LAST UPDATE: 30-05-2012
 **/
-#include "RGB.h"
+#include "ColorLamp.h"
 #include "Calculate.h"
 
 /** CONSTRUCTORS **/
-RGB::RGB()
+ColorLamp::ColorLamp()
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -33,7 +33,7 @@ RGB::RGB()
   _animType		= 	0;
   // Serial.println("EMPTY CONSTRUCTIR CALL");
 }
-RGB::RGB( uint16_t channelRed  )
+ColorLamp::ColorLamp( uint16_t channelRed  )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -52,7 +52,7 @@ RGB::RGB( uint16_t channelRed  )
   _isAnimating	=	false;
   _animType		= 	0;
 }
-RGB::RGB( uint16_t channelRed, bool autoWrite )
+ColorLamp::ColorLamp( uint16_t channelRed, bool autoWrite )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -71,7 +71,7 @@ RGB::RGB( uint16_t channelRed, bool autoWrite )
   _isAnimating	=	false;
   _animType		= 	0;
 }
-RGB::RGB( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite )
+ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -90,7 +90,7 @@ RGB::RGB( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool
   _isAnimating	=	false;
   _animType		= 	0;
 }
-RGB::RGB( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite, uint16_t x, uint16_t y )
+ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite, uint16_t x, uint16_t y )
 {
   _x          	=  	x;
   _y          	=  	y;
@@ -110,63 +110,63 @@ RGB::RGB( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool
   _animType		= 	0;
 }
 
-RGB::~RGB()
+ColorLamp::~ColorLamp()
 {
 }
 
 /** VOID FUNCTIONS **/
 
-void RGB::setRGB( uint8_t r, uint8_t g, uint8_t b )
+void ColorLamp::setRGB( uint8_t r, uint8_t g, uint8_t b )
 {
 	_red 	= constrain( r, 0, 255 );
 	_green 	= constrain( g, 0, 255 );
 	_blue 	= constrain( b, 0, 255 );
 }
 
-void RGB::setHSB( uint8_t h, uint8_t s, uint8_t b )
+void ColorLamp::setHSB( uint8_t h, uint8_t s, uint8_t b )
 {
 	_hue 		= constrain( h, 0, 255 );
 	_saturation = constrain( s, 0, 255 );
 	_intensity 	= constrain( b, 0, 255 );
 }
 
-void RGB::setHue( uint8_t h )
+void ColorLamp::setHue( uint8_t h )
 {
 	_hue 		= constrain( h, 0, 255 );
 }
 
-void RGB::setSaturation( uint8_t s )
+void ColorLamp::setSaturation( uint8_t s )
 {
 	_saturation = constrain( s, 0, 255 );
 }
 
-void RGB::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo )
+void ColorLamp::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo )
 {
 	rgbTo( rTo , gTo , bTo , DEFAULT_DURATION );
 }
 
-void RGB::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo, uint32_t duration )
+void ColorLamp::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo, uint32_t duration )
 {
-	uint8_t hsb[3];
+	uint8_t hsb[3] = { 0 , 0 , 0 };
 	uint8_t * hsbArray = rgbToHsb(rTo, gTo, bTo, hsb );
 	_isAnimating	=	true;
 	_startTime		=	millis();
 	_endTime		=	millis() + duration;
 	_startHue		= 	_hue;
 	_startSaturation= 	_saturation;
-	_startIntensity		= 	_intensity;
+	_startIntensity	= 	_intensity;
 	_endHue 		=	hsbArray[0];
 	_endSaturation	=	hsbArray[1];
-	_endIntensity			=	hsbArray[2];
+	_endIntensity	=	hsbArray[2];
 	_animType		= 	0;
 }
 
-void RGB::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo )
+void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo )
 {
 	hsbTo( hTo , sTo , bTo , DEFAULT_DURATION );
 }
 
-void RGB::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration )
+void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration )
 {
 	_isAnimating	=	true;
 	_startTime		=	millis();
@@ -180,7 +180,7 @@ void RGB::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration )
 	_animType		= 	0;
 }
 
-void RGB::hueTo( uint8_t hTo, uint32_t duration )
+void ColorLamp::hueTo( uint8_t hTo, uint32_t duration )
 {
 	_isAnimating	=	true;
 	_startTime		=	millis();
@@ -196,7 +196,7 @@ void RGB::hueTo( uint8_t hTo, uint32_t duration )
 	_animType		= 	0;
 }
 
-void RGB::saturationTo( uint8_t sTo, uint32_t duration )
+void ColorLamp::saturationTo( uint8_t sTo, uint32_t duration )
 {
 	_isAnimating	=	true;
 	_startTime		=	millis();
@@ -212,7 +212,7 @@ void RGB::saturationTo( uint8_t sTo, uint32_t duration )
 	_animType		= 	0;
 }
 
-void RGB::intensityTo( uint8_t to, uint32_t duration )
+void ColorLamp::intensityTo( uint8_t to, uint32_t duration )
 {
 	_isAnimating	=	true;
 	_startTime		=	millis();
@@ -228,7 +228,7 @@ void RGB::intensityTo( uint8_t to, uint32_t duration )
 	_animType		= 	0;
 }
 
-void RGB::update()
+void ColorLamp::update()
 {
 	if( _isAnimating )
 	{
@@ -310,41 +310,41 @@ void RGB::update()
 }
 
 /** INTEGER FUNCTIONS **/
-uint16_t RGB::getChannelRed()
+uint16_t ColorLamp::getChannelRed()
 {
 	return _channelRed;
 }
-uint16_t RGB::getChannelGreen()
+uint16_t ColorLamp::getChannelGreen()
 {
 	return _channelGreen;
 }
-uint16_t RGB::getChannelBlue()
+uint16_t ColorLamp::getChannelBlue()
 {
 	return _channelBlue;
 }
 
-uint8_t RGB::getRed()
+uint8_t ColorLamp::getRed()
 {
 	return _red;
 }
-uint8_t RGB::getGreen()
+uint8_t ColorLamp::getGreen()
 {
 	return _green;
 }
-uint8_t RGB::getBlue()
+uint8_t ColorLamp::getBlue()
 {
 	return _blue;
 }
 
-uint8_t RGB::getHue()
+uint8_t ColorLamp::getHue()
 {
 	return _hue;
 }
-uint8_t RGB::getSaturation()
+uint8_t ColorLamp::getSaturation()
 {
 	return _saturation;
 }
-uint8_t RGB::getBrightness()
+uint8_t ColorLamp::getBrightness()
 {
 	return _intensity;
 }
@@ -352,8 +352,8 @@ uint8_t RGB::getBrightness()
 /** This function is based on the one implemented 
 by robert Atkins in the RGB Converter Library
 https://github.com/ratkins/RGBConverter
-**/
-uint8_t * RGB::rgbToHsb(uint8_t r, uint8_t g, uint8_t b, uint8_t hsb[3] ) 
+*/
+uint8_t * ColorLamp::rgbToHsb(uint8_t r, uint8_t g, uint8_t b, uint8_t hsb[] ) 
 {
 	float rd = (float) r/255;
     float gd = (float) g/255;
@@ -393,8 +393,8 @@ uint8_t * RGB::rgbToHsb(uint8_t r, uint8_t g, uint8_t b, uint8_t hsb[3] )
 /** This function is based on the one implemented 
 by Elco Jacobs in the ShiftPWM Library
 https://github.com/elcojacobs/ShiftPWM
-**/
-uint8_t * RGB::hsbToRgb( uint8_t h, uint8_t s, uint8_t v, uint8_t rgb[] ) 
+*/
+uint8_t * ColorLamp::hsbToRgb( uint8_t h, uint8_t s, uint8_t v, uint8_t rgb[] ) 
 {	
 	uint8_t r,g,b;
 	uint16_t hue 	= map(h,0,255,0,359);

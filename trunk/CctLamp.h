@@ -1,5 +1,5 @@
 /**
- * Cct.h
+ * CctLamp.h
  * 
  * Copyright (c) 2011 
  
@@ -15,16 +15,16 @@
 
 #include "LED.h"
 
-class Cct:public LED
+class CctLamp:public LED
 {
   public:
   	
-    Cct();
-	Cct( uint16_t channelWarm );
-	Cct( uint16_t channelWarm , bool autoWrite );
-    Cct( uint16_t channelWarm , uint16_t channelCool , bool autoWrite );
-	Cct( uint16_t channelWarm , uint16_t channelCool , bool autoWrite , uint16_t x, uint16_t y );
-    ~Cct();
+    CctLamp();
+	CctLamp( uint16_t channelWarm );
+	CctLamp( uint16_t channelWarm , bool autoWrite );
+    CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite );
+	CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite , uint16_t x, uint16_t y );
+    ~CctLamp();
     
 	void update();
     void cctTo( uint8_t cct );
