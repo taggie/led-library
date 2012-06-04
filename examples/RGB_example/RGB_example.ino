@@ -1,15 +1,15 @@
-#include <RGB.h>
+#include <ColorLamp.h>
 
-RGB * lamp  =  new RGB( 2, true ); 
+ColorLamp * lamp  =  new ColorLamp( 2, true ); 
 
 // Or create an Array of LEDs
-// RGB * lamps[10]; 
+// ColorLamp * lamps[10]; 
 
 void setup()
 {
 /** In case of an array, initialize it
   for (int i=0; i < 10; i++) {
-      lamps[i] = new RGB( );
+      lamps[i] = new ColorLamp( );
   }
 **/
   lamp->intensityTo( 255, 1000 ); // Make sure the light is turned on so we can see what is happening
@@ -20,9 +20,9 @@ void loop()
 {
   if( !lamp->isAnimating()) // Returns true if the LED is in an animation
   {
-    if (lamp->getHue() == 0) // Returns the current RGB Value of the LED
+    if (lamp->getHue() == 0) // Returns the current Hue Value of the LED
     {
-      lamp->hueTo( 255, 2000 ); // Sets the desired RGB value and the time (in millis) it should take to get there
+      lamp->hueTo( 255, 2000 ); // Sets the desired Hue value and the time (in millis) it should take to get there
     }
     else {
       lamp->hueTo( 0, 2000 );

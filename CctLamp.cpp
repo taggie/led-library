@@ -1,5 +1,5 @@
 /**
- * Cct.h
+ * CctLamp.h
  * 
  * Copyright (c) 2011 
  
@@ -9,11 +9,11 @@
  *
  * All rights reserved. LAST UPDATE: 30-05-2012
 **/
-#include "Cct.h"
+#include "CctLamp.h"
 #include "Calculate.h"
 
 /** CONSTRUCTORS **/
-Cct::Cct()
+CctLamp::CctLamp()
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -28,7 +28,7 @@ Cct::Cct()
   _animType		= 	0;
   // Serial.println("EMPTY CONSTRUCTIR CALL");
 }
-Cct::Cct( uint16_t channelWarm  )
+CctLamp::CctLamp( uint16_t channelWarm  )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -42,7 +42,7 @@ Cct::Cct( uint16_t channelWarm  )
   _isAnimating	=	false;
   _animType		= 	0;
 }
-Cct::Cct( uint16_t channelWarm, bool autoWrite )
+CctLamp::CctLamp( uint16_t channelWarm, bool autoWrite )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -56,7 +56,7 @@ Cct::Cct( uint16_t channelWarm, bool autoWrite )
   _isAnimating	=	false;
   _animType		= 	0;
 }
-Cct::Cct( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
+CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -70,7 +70,7 @@ Cct::Cct( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
   _isAnimating	=	false;
   _animType		= 	0;
 }
-Cct::Cct( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, uint16_t x, uint16_t y )
+CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, uint16_t x, uint16_t y )
 {
   _x          	=  	x;
   _y          	=  	y;
@@ -84,7 +84,7 @@ Cct::Cct( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, uint16_t x
   _isAnimating	=	false;
   _animType		= 	0;
   
-  	/*Serial.println("	Constructing Cct:: ");
+  	/*Serial.println("	Constructing CctLamp:: ");
 	Serial.println("		[  x: "+String(int(_x),DEC)+"]");
 	Serial.println("		[  y: "+String(int(_y),DEC)+"]");
 	Serial.println("		[int: "+String(_intensity,DEC)+"]");
@@ -92,13 +92,13 @@ Cct::Cct( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, uint16_t x
 	Serial.println("		[ani: "+String(_isAnimating, BIN)+"]");*/
 }
 
-Cct::~Cct()
+CctLamp::~CctLamp()
 {
 }
 
 /** VOID FUNCTIONS **/
 
-void Cct::setCct( uint8_t cct )
+void CctLamp::setCct( uint8_t cct )
 {
 	if( cct != _cct )
 	{
@@ -106,7 +106,7 @@ void Cct::setCct( uint8_t cct )
 	}
 }
 
-void Cct::setIntensityWarm( uint8_t intensityWarm )
+void CctLamp::setIntensityWarm( uint8_t intensityWarm )
 {
 	if( intensityWarm != _intensityWarm )
 	{
@@ -114,7 +114,7 @@ void Cct::setIntensityWarm( uint8_t intensityWarm )
 	}
 }
 
-void Cct::setIntensityCool( uint8_t intensityCool )
+void CctLamp::setIntensityCool( uint8_t intensityCool )
 {
 	if( intensityCool != _intensityCool )
 	{
@@ -122,12 +122,12 @@ void Cct::setIntensityCool( uint8_t intensityCool )
 	}
 }
 
-void Cct::cctTo( uint8_t to )
+void CctLamp::cctTo( uint8_t to )
 {
 	cctTo( to , DEFAULT_DURATION );
 }
 
-void Cct::cctTo( uint8_t to, uint32_t duration )
+void CctLamp::cctTo( uint8_t to, uint32_t duration )
 {
 	_isAnimating	=	true;
 	_startTime		=	millis();
@@ -142,7 +142,7 @@ void Cct::cctTo( uint8_t to, uint32_t duration )
 	_animType		= 	0;
 }
 
-void Cct::intensityTo( uint8_t to, uint32_t duration )
+void CctLamp::intensityTo( uint8_t to, uint32_t duration )
 {
 	_isAnimating	=	true;
 	_startTime		=	millis();
@@ -157,7 +157,7 @@ void Cct::intensityTo( uint8_t to, uint32_t duration )
 	_animType		= 	0;
 }
 
-void Cct::update()
+void CctLamp::update()
 {
 /*
 	Serial.println("update:: ");
@@ -257,25 +257,25 @@ void Cct::update()
 }
 
 /** INTEGER FUNCTIONS **/
-uint16_t Cct::getChannelWarm()
+uint16_t CctLamp::getChannelWarm()
 {
 	return _channelWarm;
 }
-uint16_t Cct::getChannelCool()
+uint16_t CctLamp::getChannelCool()
 {
 	return _channelCool;
 }
 
-uint8_t Cct::getIntensityWarm()
+uint8_t CctLamp::getIntensityWarm()
 {
 	return _intensityWarm;
 }
-uint8_t Cct::getIntensityCool()
+uint8_t CctLamp::getIntensityCool()
 {
 	return _intensityCool;
 }
 
-uint8_t Cct::getCct()
+uint8_t CctLamp::getCct()
 {
 	return _cct;
 }

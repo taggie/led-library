@@ -1,4 +1,4 @@
-#include <Cct.h>
+#include <CctLamp.h>
 
 Cct * lamp  =  new Cct( 5, true ); 
 
