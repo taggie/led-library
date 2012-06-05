@@ -24,6 +24,7 @@ toggle	KEYWORD2
 setToggle	KEYWORD2
 intensityTo	KEYWORD2
 cctTo	KEYWORD2
+cctLampTo	KEYWORD2
 rgbTo	KEYWORD2
 hsbTo	KEYWORD2
 hueTo	KEYWORD2
@@ -34,6 +35,7 @@ setAnimationType	KEYWORD2
 isOn	KEYWORD2
 isOff	KEYWORD2
 isAnimating	KEYWORD2
+hasNewValue	KEYWORD2
 getChannel	KEYWORD2
 getChannelWarm	KEYWORD2
 getChannelCool	KEYWORD2

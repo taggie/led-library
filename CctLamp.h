@@ -27,9 +27,9 @@ class CctLamp:public LED
     ~CctLamp();
     
 	void update();
-    void cctTo( uint8_t cct );
-	void cctTo( uint8_t cct , uint32_t duration);
-	void intensityTo( uint8_t to , uint32_t duration);
+	void cctTo( uint8_t cct , uint32_t duration = DEFAULT_DURATION);
+	void intensityTo( uint8_t to , uint32_t duration = DEFAULT_DURATION);
+	void cctLampTo( uint8_t intens , uint8_t cct, uint32_t duration = DEFAULT_DURATION);
 	
 	uint8_t getCct();
     uint8_t getIntensityWarm();
@@ -58,6 +58,8 @@ class CctLamp:public LED
 	uint8_t _startCct;
 	uint8_t _endCct;
 	
+	uint8_t calculateIntensityWarm();
+	uint8_t calculateIntensityCool();
 };
 
 #endif

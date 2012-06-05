@@ -118,9 +118,13 @@ ColorLamp::~ColorLamp()
 
 void ColorLamp::setRGB( uint8_t r, uint8_t g, uint8_t b )
 {
-	_red 	= constrain( r, 0, 255 );
-	_green 	= constrain( g, 0, 255 );
-	_blue 	= constrain( b, 0, 255 );
+	if ( _red != r || _green != g || _blue != b ) 
+	{
+		_red 	= constrain( r, 0, 255 );
+		_green 	= constrain( g, 0, 255 );
+		_blue 	= constrain( b, 0, 255 );
+		_hasNewValue = true;
+	}
 }
 
 void ColorLamp::setHSB( uint8_t h, uint8_t s, uint8_t b )
@@ -173,10 +177,10 @@ void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration 
 	_endTime		=	millis() + duration;
 	_startHue		= 	_hue;
 	_startSaturation= 	_saturation;
-	_startIntensity		= 	_intensity;
+	_startIntensity	= 	_intensity;
 	_endHue 		=	hTo;
 	_endSaturation	=	sTo;
-	_endIntensity			=	bTo;
+	_endIntensity	=	bTo;
 	_animType		= 	0;
 }
 
@@ -191,7 +195,7 @@ void ColorLamp::hueTo( uint8_t hTo, uint32_t duration )
 	make sure that an ongoing animation is not disturbed 
 	*/
 	_startSaturation= 	_saturation;
-	_startIntensity		= 	_intensity;
+	_startIntensity	= 	_intensity;
 	_endHue 		=	hTo;
 	_animType		= 	0;
 }
@@ -207,7 +211,7 @@ void ColorLamp::saturationTo( uint8_t sTo, uint32_t duration )
 	make sure that an ongoing animation is not disturbed 
 	*/
 	_startHue		= 	_hue;
-	_startIntensity		= 	_intensity;
+	_startIntensity	= 	_intensity;
 	_endSaturation 	=	sTo;
 	_animType		= 	0;
 }
@@ -224,7 +228,7 @@ void ColorLamp::intensityTo( uint8_t to, uint32_t duration )
 	*/
 	_startHue		= 	_hue;
 	_startSaturation= 	_saturation;
-	_endIntensity			=	to;
+	_endIntensity	=	to;
 	_animType		= 	0;
 }
 
@@ -276,7 +280,7 @@ void ColorLamp::update()
 					}
 					break;
 			}
-			/*  Update the RGB values to reflect the changes  */
+			/*  Update the RGB values to reflect the changes for actuation */
 			uint8_t rgb[3];
 			uint8_t * rgbArray = hsbToRgb(_hue, _saturation, _intensity, rgb );
 			setRGB(	rgbArray[0], rgbArray[1], rgbArray[2] );
@@ -285,6 +289,7 @@ void ColorLamp::update()
 		else if( millis() >= _endTime)
 		{
 			setHSB( _endHue, _endSaturation, _endIntensity );
+			/*  Update the RGB values to reflect the changes for actuation */
 			uint8_t rgb[3];
 			uint8_t * rgbArray = hsbToRgb(_hue, _saturation, _intensity, rgb );
 			setRGB(	rgbArray[0], rgbArray[1], rgbArray[2] );
@@ -399,11 +404,11 @@ uint8_t * ColorLamp::hsbToRgb( uint8_t h, uint8_t s, uint8_t v, uint8_t rgb[] )
 	uint8_t r,g,b;
 	uint16_t hue 	= map(h,0,255,0,359);
 	uint16_t phase 	= hue/60;
-	uint16_t bottom = ((255 - s) * v)>>8;
+	uint16_t bottom = ( (255 - s) * (float(v) / 255.0));
 	uint16_t top 	= v;
 	uint8_t rising  = ((top-bottom)  *(hue%60   )  )  /  60  +  bottom;
 	uint8_t falling = ((top-bottom)  *(60-hue%60)  )  /  60  +  bottom;
-
+	
 	switch(phase) {
 	case 0:
 		r = top;
@@ -441,6 +446,7 @@ uint8_t * ColorLamp::hsbToRgb( uint8_t h, uint8_t s, uint8_t v, uint8_t rgb[] )
 		b = falling;
 		break;
 	}
+
     rgb[0] = r;
     rgb[1] = g;
     rgb[2] = b;
