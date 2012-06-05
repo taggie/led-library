@@ -103,6 +103,7 @@ void CctLamp::setCct( uint8_t cct )
 	if( cct != _cct )
 	{
 		_cct = constrain( cct, 0, 100 );
+		_hasNewValue = true;
 	}
 }
 
@@ -122,11 +123,6 @@ void CctLamp::setIntensityCool( uint8_t intensityCool )
 	}
 }
 
-void CctLamp::cctTo( uint8_t to )
-{
-	cctTo( to , DEFAULT_DURATION );
-}
-
 void CctLamp::cctTo( uint8_t to, uint32_t duration )
 {
 	_isAnimating	=	true;
@@ -138,7 +134,7 @@ void CctLamp::cctTo( uint8_t to, uint32_t duration )
 	an ongoing animation of intensity is not disturbed 
 	*/
 	_startIntensity		= 	_intensity;
-	_endCct 		=	to;
+	_endCct 		=	constrain(to, 0, 100);
 	_animType		= 	0;
 }
 
@@ -153,7 +149,20 @@ void CctLamp::intensityTo( uint8_t to, uint32_t duration )
 	animation of cct is not disturbed 
 	*/
 	_startCct		= 	_cct;
-	_endIntensity			=	to;
+	_endIntensity	=	to;
+	_animType		= 	0;
+}
+
+/** Sets CCT Lamp with all its values; intensity, cct value and duration in millis **/
+void CctLamp::cctLampTo( uint8_t intens, uint8_t cct, uint32_t duration )
+{
+	_isAnimating	=	true;
+	_startTime		=	millis();
+	_endTime		=	millis() + duration;
+	_startIntensity		=	_intensity;
+	_startCct		= 	_cct;
+	_endIntensity	=	intens;
+	_endCct			=	constrain(cct, 0, 100);
 	_animType		= 	0;
 }
 
@@ -204,36 +213,19 @@ void CctLamp::update()
 					{ 			
 						setCct(			Calculate.linear( t, bc, cc, d ) );
 					}
-					break;
+				break;
 			}
-			
-			/* Calculate the Warm and Cool values based on the newly calculated cct and intensity values */
-			uint8_t animatedIntensityWarm = 0;
-			uint8_t animatedIntensityCool = 0;
-			
-			/* first calculate based on the cct value */
-			if( _cct <= 50 )
-			{
-			  animatedIntensityCool  =  map( _cct, 0, 50, 0, 255 );
-			  animatedIntensityWarm  =  255;
-			}
-			else
-			{
-			  animatedIntensityWarm  =  map( _cct, 50, 100, 255, 0);
-			  animatedIntensityCool  =  255;
-			}
-			
-			/* second multiply with intensity to determine the overall level */
-			animatedIntensityWarm  =  uint8_t ( (animatedIntensityWarm * _intensity) / 255 );
-			animatedIntensityCool  =  uint8_t ( (animatedIntensityCool * _intensity) / 255 );
-			
-			/* store the values for actuation */
-			setIntensityWarm( animatedIntensityWarm );
-			setIntensityCool( animatedIntensityCool );
+				
+			/* calculate and store warm and cool values for actuation */
+			setIntensityWarm( calculateIntensityWarm() );
+			setIntensityCool( calculateIntensityCool() );
 		}
-		
 		else if( millis() >= _endTime)
 		{
+			/* calculate and store warm and cool values for actuation */
+			setIntensityWarm( calculateIntensityWarm() );
+			setIntensityCool( calculateIntensityCool() );
+			/* Store cct and intensity values for reference */
 			setIntensity( _endIntensity );
 			setCct( _endCct );
 			_isAnimating = false;
@@ -278,4 +270,52 @@ uint8_t CctLamp::getIntensityCool()
 uint8_t CctLamp::getCct()
 {
 	return _cct;
+}
+
+uint8_t CctLamp::calculateIntensityWarm()
+{
+	/* Calculate the Warm and Cool values based on the newly calculated cct and intensity values */
+	uint8_t animatedIntensityWarm = 0;
+	//uint8_t animatedIntensityCool = 0;
+	
+	/* first calculate based on the cct value */
+	if( _cct <= 50 )
+	{
+	  //animatedIntensityCool  =  map( _cct, 0, 50, 0, 255 );
+	  animatedIntensityWarm  =  255;
+	}
+	else
+	{
+	  animatedIntensityWarm  =  map( _cct, 50, 100, 255, 0);
+	  //animatedIntensityCool  =  255;
+	}
+	
+	/* second multiply with intensity to determine the overall level */
+	animatedIntensityWarm  =  uint8_t ( (animatedIntensityWarm * _intensity) / 255 );
+	//animatedIntensityCool  =  uint8_t ( (animatedIntensityCool * _intensity) / 255 );
+	return animatedIntensityWarm;
+}
+
+uint8_t CctLamp::calculateIntensityCool()
+{
+	/* Calculate the Warm and Cool values based on the newly calculated cct and intensity values */
+	//uint8_t animatedIntensityWarm = 0;
+	uint8_t animatedIntensityCool = 0;
+	
+	/* first calculate based on the cct value */
+	if( _cct <= 50 )
+	{
+	  animatedIntensityCool  =  map( _cct, 0, 50, 0, 255 );
+	  //animatedIntensityWarm  =  255;
+	}
+	else
+	{
+	  //animatedIntensityWarm  =  map( _cct, 50, 100, 255, 0);
+	  animatedIntensityCool  =  255;
+	}
+	
+	/* second multiply with intensity to determine the overall level */
+	//animatedIntensityWarm  =  uint8_t ( (animatedIntensityWarm * _intensity) / 255 );
+	animatedIntensityCool  =  uint8_t ( (animatedIntensityCool * _intensity) / 255 );
+	return animatedIntensityCool;
 }

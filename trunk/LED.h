@@ -60,6 +60,7 @@ class LED
     bool isOn();
     bool isOff();
     bool isAnimating();
+	bool hasNewValue();
     
     uint8_t getChannel();
     uint8_t getIntensity();
@@ -68,7 +69,7 @@ class LED
     uint16_t getY();
 
   protected:
-  	bool _on, _autoWrite, _isAnimating;
+  	bool _on, _autoWrite, _isAnimating, _hasNewValue;
     uint16_t _channel; 
     uint8_t _intensity;
     uint16_t _x, _y;

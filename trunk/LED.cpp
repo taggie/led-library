@@ -148,7 +148,7 @@ void LED::setIntensity( uint8_t intensity )
 	if( intensity != _intensity )
 	{
 		_intensity = constrain( intensity, 0, 255 );
-		//analogWrite( _channel, int(_intensity) );
+		_hasNewValue = true;
 	}
 }
 void LED::setX( uint16_t x )
@@ -201,7 +201,7 @@ void LED::intensityTo( uint8_t to, uint32_t duration )
 	_startTime		=	millis();
 	_endTime		=	millis() + duration;
 	_startIntensity		=	_intensity;
-	_endIntensity			=	to;
+	_endIntensity		=	to;
 	_animType		= 	0;
 }
 void LED::intensityFromTo( uint8_t from, uint8_t to, uint32_t duration )
@@ -234,6 +234,19 @@ bool LED::isOff()
 bool LED::isAnimating()
 {
 	return _isAnimating;
+}
+
+bool LED::hasNewValue()
+{
+	if (_hasNewValue)
+	{
+		_hasNewValue = false;
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
 }
 
 /** INTEGER FUNCTIONS **/
