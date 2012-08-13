@@ -7,7 +7,7 @@
  
  * Intelligent Lighting Institute (ILI), TU/e.
  *
- * All rights reserved. LAST UPDATE: 13-01-2012
+ * All rights reserved. LAST UPDATE: 13-08-2012
 **/
 
 #ifndef LED_h
@@ -26,37 +26,43 @@
 	#define DEFAULT_DURATION 1000
 #endif
 
-class LED
-{
-  public:
-  	static const uint8_t LINEAR 		= 0;
+#include "Animation.h"
+	
+  	/* Animation constants */
+	static const uint8_t LINEAR 		= 0;
   	static const uint8_t QUADRATIC 		= 1;
   	static const uint8_t EXPONENTIAL 	= 2;
   	static const uint8_t CIRCULAR 		= 3;
   	static const uint8_t SINUS 			= 4;
+
+	static const uint8_t INTENSITY		= 0;
+	static const uint8_t CCT			= 1;
+	static const uint8_t HUE			= 2;
+	static const uint8_t SATURATION		= 3;
+
+class LED
+{
+  public:
   
     LED();
-	LED( uint16_t channel );
-    LED( uint16_t channel, bool autoWrite );
+    LED( uint16_t channel, bool autoWrite = true );
 	LED( uint16_t channel, bool autoWrite, uint16_t x, uint16_t y );
-    LED( uint16_t channel, bool autoWrite, uint16_t x, uint16_t y, uint8_t intensity, bool on );
     ~LED();
     
     void update();    
-    void setIntensity( uint8_t intensity );
+    void setIntensity( uint8_t intensity, bool stopAnimation = true );
     void setX( uint16_t x );
     void setY( uint16_t y );
     void setPosition( uint16_t x, uint16_t y );
     void setChannel( uint16_t channel );
+	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );
+	
     void toggle();
-	void toggle( uint32_t duration );
 	void setToggle( bool toggle );
-	void intensityTo( uint8_t to );
-    void intensityTo( uint8_t to, uint32_t duration );
-    void intensityFromTo( uint8_t from, uint8_t to, uint32_t duration );
-    void moveTo( uint16_t newX, uint16_t newY, uint32_t duration );
-    void setAnimationType( uint8_t type );
-    
+    void intensityTo( uint8_t to, uint32_t duration = DEFAULT_DURATION );
+    void intensityFromTo( uint8_t from, uint8_t to, uint32_t duration = DEFAULT_DURATION );
+    void moveTo( uint16_t newX, uint16_t newY, uint32_t duration = DEFAULT_DURATION );
+
     bool isOn();
     bool isOff();
     bool isAnimating();
@@ -67,16 +73,15 @@ class LED
     
     uint16_t getX();
     uint16_t getY();
+	
+	/** The animation Objects that are used **/
+	Animation * intensityAnim;
 
   protected:
-  	bool _on, _autoWrite, _isAnimating, _hasNewValue;
+  	bool _on, _autoWrite, _hasNewValue;
     uint16_t _channel; 
     uint8_t _intensity;
     uint16_t _x, _y;
-    /** Animation variables **/
-    uint8_t _animType;
-    long _startTime, _endTime;
-    uint16_t _startIntensity, _endIntensity;
 };
 
 #endif

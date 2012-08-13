@@ -1,4 +1,4 @@
-/**
+/*
  * Calculate.cpp - A library for calculations not available in the standard Arduino language.
  *
  * Copyright (c) 2011 Remco Magielse, Intelligent Lighting Institute (ILI), TU/e. 
@@ -13,16 +13,6 @@ static const float PII = 3.14159265;
 uint16_t CalculateClass::linear( uint32_t t, uint16_t b, int c, uint32_t d )
 {
   uint16_t calculation = c * ((float)t/(float)d) + b;
-  /** Serial.print("calc ");
-  Serial.print(c);
-  Serial.print("* (");
-  Serial.print(t);
-  Serial.print("/");
-  Serial.print(d);
-  Serial.print(") + "); 
-  Serial.print(b);
-  Serial.print( "=");
-  Serial.println(calculation); **/
 
   return calculation;
 }
@@ -32,7 +22,7 @@ float CalculateClass::quadratic( float t, float b, float c, float d, boolean eas
 {
   if(easeIn && !easeOut)
   {
-    /** Checked: CORRECT **/
+    /* Checked: CORRECT*/
     t /= d;
     float calculation = c*t*t + b;
     return calculation;
@@ -40,7 +30,7 @@ float CalculateClass::quadratic( float t, float b, float c, float d, boolean eas
   
   else if(!easeIn && easeOut)
   {
-    /** Checked: CORRECT **/
+    /* Checked: CORRECT */
     t /= d;
     float calculation = -c*t*(t-2) + b;
     return calculation;
@@ -48,6 +38,7 @@ float CalculateClass::quadratic( float t, float b, float c, float d, boolean eas
   
   else
   {
+	/* Checked: CORRECT */
     t /= d/2;
     if(t < 1)
     {
@@ -63,13 +54,23 @@ float CalculateClass::quadratic( float t, float b, float c, float d, boolean eas
   }
 }
 
-/** An exponential easing equation **/
+/** An exponential easing equation. !!! Not functional at the moment!!! **/
 float CalculateClass::exponential( float t, float b, float c, float d, boolean easeIn, boolean easeOut )
 {
   if(easeIn && !easeOut)
   {
     t /= d;
     float calculation = c * sq(10 *(t/d - 1)) + b;
+	  /* Serial.print("calc c:");
+	  Serial.print(c);
+	  Serial.print(", t:");
+	  Serial.print(t);
+	  Serial.print(", d:");
+	  Serial.print(d);
+	  Serial.print(", b:"); 
+	  Serial.print(b);
+	  Serial.print( " = " );
+	  Serial.println(calculation); */
     return calculation;
   }
   
@@ -99,7 +100,7 @@ float CalculateClass::exponential( float t, float b, float c, float d, boolean e
   }
 }
 
-/** An circular easing equation **/
+/** An circular easing equation. !!! Not functional at the moment!!! **/
 float CalculateClass::circular( float t, float b, float c, float d, boolean easeIn, boolean easeOut )
 {
   if(easeIn && !easeOut)
@@ -136,7 +137,7 @@ float CalculateClass::circular( float t, float b, float c, float d, boolean ease
   
 }
 
-/** A sinus easing equation **/
+/** A sinus easing equation. !!! Not functional at the moment!!! **/
 float CalculateClass::sinus( float t, float b, float c, float d, boolean easeIn, boolean easeOut )
 {
   if(easeIn && !easeOut)

@@ -1,4 +1,4 @@
-/**
+/*
  * CctLamp.h
  * 
  * Copyright (c) 2011 
@@ -7,41 +7,16 @@
  
  * Intelligent Lighting Institute (ILI), TU/e.
  *
- * All rights reserved. LAST UPDATE: 30-05-2012
-**/
+ * All rights reserved. LAST UPDATE: 13-08-2012
+*/
 #include "CctLamp.h"
 #include "Calculate.h"
 
-/** CONSTRUCTORS **/
-CctLamp::CctLamp()
-{
-  _x          	=  	0;
-  _y          	=  	0;
-  _intensity 	=  	0;
-  _cct			=	50;
-  _channel	 	=  	0;
-  _channelWarm 	=  	0;
-  _channelCool 	=  	1;
-  _on		 	=	true;
-  _autoWrite	=	false;
-  _isAnimating	=	false;
-  _animType		= 	0;
-  // Serial.println("EMPTY CONSTRUCTIR CALL");
-}
-CctLamp::CctLamp( uint16_t channelWarm  )
-{
-  _x          	=  	0;
-  _y          	=  	0;
-  _intensity 	=  	0;
-  _cct			=	50;
-  _channel	 	=  	channelWarm;
-  _channelWarm 	=  	channelWarm;
-  _channelCool 	=  	channelWarm + 1;
-  _on		 	=	true;
-  _autoWrite	=	false;
-  _isAnimating	=	false;
-  _animType		= 	0;
-}
+/** cctAnim is the object that is used to manage the color temperature animations **/
+Animation * cctAnim;
+
+/* CONSTRUCTORS */
+
 CctLamp::CctLamp( uint16_t channelWarm, bool autoWrite )
 {
   _x          	=  	0;
@@ -53,9 +28,20 @@ CctLamp::CctLamp( uint16_t channelWarm, bool autoWrite )
   _channelCool 	=  	channelWarm + 1;
   _on		 	=	true;
   _autoWrite	=	autoWrite;
-  _isAnimating	=	false;
-  _animType		= 	0;
+  
+  intensityAnim  =  new Animation();  
+  cctAnim  =  new Animation();
+  
+  if ( _autoWrite )
+  {
+	pinMode( _channelWarm, OUTPUT );
+	pinMode( _channelCool, OUTPUT );
+  }
+  
+  _hasNewValue = true;
+  update();
 }
+
 CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
 {
   _x          	=  	0;
@@ -67,9 +53,17 @@ CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
   _channelCool 	=  	channelCool;
   _on		 	=	true;
   _autoWrite	=	autoWrite;
-  _isAnimating	=	false;
-  _animType		= 	0;
+
+  if ( _autoWrite )
+  {
+	pinMode( _channelWarm, OUTPUT );
+	pinMode( _channelCool, OUTPUT );
+  }
+  
+  _hasNewValue = true;
+  update();
 }
+
 CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, uint16_t x, uint16_t y )
 {
   _x          	=  	x;
@@ -81,29 +75,37 @@ CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, ui
   _channelCool 	=  	channelCool;
   _on		 	=	true;
   _autoWrite	=	autoWrite;
-  _isAnimating	=	false;
-  _animType		= 	0;
+
+  if ( _autoWrite )
+  {
+	pinMode( _channelWarm, OUTPUT );
+	pinMode( _channelCool, OUTPUT );
+  }
   
-  	/*Serial.println("	Constructing CctLamp:: ");
-	Serial.println("		[  x: "+String(int(_x),DEC)+"]");
-	Serial.println("		[  y: "+String(int(_y),DEC)+"]");
-	Serial.println("		[int: "+String(_intensity,DEC)+"]");
-	Serial.println("		[cha: "+String(_channel,DEC)+"]");
-	Serial.println("		[ani: "+String(_isAnimating, BIN)+"]");*/
+  _hasNewValue = true;
+  update();
 }
 
 CctLamp::~CctLamp()
 {
 }
 
-/** VOID FUNCTIONS **/
+/* VOID FUNCTIONS */
 
-void CctLamp::setCct( uint8_t cct )
+/** Immediatily sets the color temperature of the lamp (range 0 - 100). An ongoing cct animation is stopped unless stopAnimation is set to false.
+	Make sure to also set the intensity to a value that is greater than 0, 
+	otherwise you won't see the effect of the color temperature change.
+ **/
+void CctLamp::setCct( uint8_t cct, bool stopAnimation )
 {
 	if( cct != _cct )
 	{
 		_cct = constrain( cct, 0, 100 );
 		_hasNewValue = true;
+		if (stopAnimation)
+		{
+			cctAnim->stopAnimation();
+		}
 	}
 }
 
@@ -123,150 +125,94 @@ void CctLamp::setIntensityCool( uint8_t intensityCool )
 	}
 }
 
-void CctLamp::cctTo( uint8_t to, uint32_t duration )
+/** Animates the color temperature of the lamp (range 0 - 100) with its duration in millis.
+	Make sure to also set the intensity to a value that is greater than 0, 
+	otherwise you won't see the effect of the color temperature change.
+ **/
+void CctLamp::cctTo( uint8_t cct, uint32_t duration )
 {
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startCct		= 	_cct;
-	/* the _startIntensity value is also updated to the 
-	current _intensity to make sure that 
-	an ongoing animation of intensity is not disturbed 
-	*/
-	_startIntensity		= 	_intensity;
-	_endCct 		=	constrain(to, 0, 100);
-	_animType		= 	0;
+	cctAnim->startAnimation( _cct, constrain(cct, 0, 100), duration );
 }
 
-void CctLamp::intensityTo( uint8_t to, uint32_t duration )
-{
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startIntensity		=	_intensity;
-	/* the _startCct value is also updated to the 
-	current _cct to make sure that an ongoing 
-	animation of cct is not disturbed 
-	*/
-	_startCct		= 	_cct;
-	_endIntensity	=	to;
-	_animType		= 	0;
-}
-
-/** Sets CCT Lamp with all its values; intensity, cct value and duration in millis **/
+/** Animates CCT Lamp with all its values; intensity, cct value and duration in millis **/
 void CctLamp::cctLampTo( uint8_t intens, uint8_t cct, uint32_t duration )
-{
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startIntensity		=	_intensity;
-	_startCct		= 	_cct;
-	_endIntensity	=	intens;
-	_endCct			=	constrain(cct, 0, 100);
-	_animType		= 	0;
+{	
+	intensityAnim->startAnimation( _intensity, constrain(intens, 0, 255), duration );
+	cctAnim->startAnimation( _cct, constrain(cct, 0, 100), duration );
 }
 
+/** Sets the animation type for a CCT Lamp. The available animation types are LINEAR (no easing) and QUADRATIC. 
+	QUADRATIC animations allow independant easing in and out **/
+void CctLamp::setAnimationType( uint8_t animType, bool easeIn, bool easeOut )
+{
+	intensityAnim->setAnimationType( animType, easeIn, easeOut );
+	cctAnim->setAnimationType( animType, easeIn, easeOut );
+}
+
+/** Update Function; should be called every loop to set, animate and actuate the lamps **/
 void CctLamp::update()
 {
-/*
-	Serial.println("update:: ");
-	Serial.print("anim ");
-	Serial.print(_isAnimating, DEC);
-	Serial.print(" - intens ");
-	Serial.println(_intensity, DEC);
-*/	
-	if( _isAnimating )
+	if( intensityAnim->isAnimating() )
 	{
-		//Check if the animation is still going on
-		if( millis() < _endTime )
-		{
-			uint32_t t	=	( millis() - _startTime );	// current time
-			uint16_t bi	=	_startIntensity;					// begin intensity
-			uint16_t bc	=	_startCct;					// begin cct
-			int      ci	=	( _endIntensity - _startIntensity );	// difference in intensity 	(may be negative, this results in problems in some _animTypes)
-			int      cc	=	( _endCct - _startCct );	// difference in cct 		(may be negative, this results in problems in some _animTypes)
-			uint32_t d	=	_endTime - _startTime;		// duration
-			
-			switch( _animType )
-			{
-				/* FIX: Functions other than linear may not work as the float of c can somehow not be neagtive. */
-				/*case QUADRATIC:
-					animatedIntensity	=	Calculate.quadratic( (float)t, (float)b, (float)c, (float)d, true, true);
-					break;
-				case EXPONENTIAL:
-					animatedIntensity	=	Calculate.exponential( (float)t, (float)b, (float)c, (float)d, true, true );
-					break;
-				case CIRCULAR:
-					animatedIntensity	=	Calculate.circular( (float)t, (float)b, (float)c, (float)d, true, true );
-					break;
-				case SINUS:
-					animatedIntensity	=	Calculate.sinus( (float)t, (float)b, (float)c, (float)d, true, true );
-					break;	*/	
-				default:
-					/* we are animating the intensity and/or cct 
-					change the values that are being animated */
-					if (_endIntensity != _intensity) 	
-					{ 	
-						setIntensity(	Calculate.linear( t, bi, ci, d ) );
-					}
-					if (_endCct != _cct) 		// we are animating the CCT
-					{ 			
-						setCct(			Calculate.linear( t, bc, cc, d ) );
-					}
-				break;
-			}
-				
-			/* calculate and store warm and cool values for actuation */
-			setIntensityWarm( calculateIntensityWarm() );
-			setIntensityCool( calculateIntensityCool() );
-		}
-		else if( millis() >= _endTime)
-		{
-			/* calculate and store warm and cool values for actuation */
-			setIntensityWarm( calculateIntensityWarm() );
-			setIntensityCool( calculateIntensityCool() );
-			/* Store cct and intensity values for reference */
-			setIntensity( _endIntensity );
-			setCct( _endCct );
-			_isAnimating = false;
-		}
+		setIntensity( intensityAnim->getValue(), false );
+	}
+	
+	if( cctAnim->isAnimating() )
+	{
+		setCct( cctAnim->getValue(), false );
+	}
+	/* If there is no animation going on and the device is turned off
+		and the intensity is not set to 0; turn the LED off
+	*/
+	if( !intensityAnim->isAnimating() && !cctAnim->isAnimating() && !_on && _intensity > 0 )
+	{
+		setIntensity( 0, false );
+	}
+	
+	if ( _hasNewValue) 
+	{
+		/* Here we convert CCT and Intensity values to Warm and Cool white values so they can be actuated */
+		setIntensityWarm( calculateIntensityWarm() );
+		setIntensityCool( calculateIntensityCool() );
 		
+		/* Here we actually actuate the light if autowrite is on */
 		if( _autoWrite )
 		{
 			analogWrite(_channelWarm, _intensityWarm);
 			analogWrite(_channelCool, _intensityCool);
+			_hasNewValue = false;
 		}
 	}
-	/** If there is no animation going on,
-		and the device is turned off,
-		and the intensity is not set to 0,
-		turn the LED off
-	**/
-	if( !_isAnimating && !_on && _intensity > 0 )
-	{
-		setIntensity( 0 );
-	}
+	
 }
 
-/** INTEGER FUNCTIONS **/
+/* INTEGER FUNCTIONS */
+
+/** Returns the channel to which the warm LED should be connected **/
 uint16_t CctLamp::getChannelWarm()
 {
 	return _channelWarm;
 }
+
+/** Returns the channel to which the cool LED should be connected **/
 uint16_t CctLamp::getChannelCool()
 {
 	return _channelCool;
 }
 
+/** Returns the current intensity of the warm LED **/
 uint8_t CctLamp::getIntensityWarm()
 {
 	return _intensityWarm;
 }
+
+/** Returns the current intensity of the cool LED **/
 uint8_t CctLamp::getIntensityCool()
 {
 	return _intensityCool;
 }
 
+/** Returns the current color temperature of the LED (range 0 - 100) **/
 uint8_t CctLamp::getCct()
 {
 	return _cct;
@@ -318,4 +264,33 @@ uint8_t CctLamp::calculateIntensityCool()
 	//animatedIntensityWarm  =  uint8_t ( (animatedIntensityWarm * _intensity) / 255 );
 	animatedIntensityCool  =  uint8_t ( (animatedIntensityCool * _intensity) / 255 );
 	return animatedIntensityCool;
+}
+
+/* BOOL FUNCTIONS */
+
+/** Returns true if the lamp is animating either intensity of cct **/
+bool CctLamp::isAnimating()
+{
+	if ( !intensityAnim->isAnimating() && !cctAnim->isAnimating() )
+	{
+		return false;
+	}
+	else 
+	{
+		return true;
+	}
+}
+
+/** Returns true if the supplied parameter (CCT or INTENSITY) is animating **/
+bool CctLamp::isAnimating(uint8_t param)
+{
+	switch ( param )
+	{
+		case INTENSITY:
+			return intensityAnim->isAnimating();
+		break;
+		case CCT:
+			return cctAnim->isAnimating();
+		break;
+	}
 }

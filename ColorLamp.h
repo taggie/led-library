@@ -1,4 +1,4 @@
-/**
+/*
  * ColorLamp.h
  * 
  * Copyright (c) 2011 
@@ -7,8 +7,8 @@
  
  * Intelligent Lighting Institute (ILI), TU/e.
  *
- * All rights reserved. LAST UPDATE: 30-05-2012
-**/
+ * All rights reserved. LAST UPDATE: 13-08-2012
+*/
 
 #ifndef RGB_h
 #define RGB_h
@@ -18,21 +18,38 @@
 class ColorLamp:public LED
 {
   public:
-    ColorLamp();
-	ColorLamp( uint16_t channelRed );
-	ColorLamp( uint16_t channelRed , bool autoWrite );
-    ColorLamp( uint16_t channelRed , uint16_t channelGreen , uint16_t channelBlue , bool autoWrite );
-	ColorLamp( uint16_t channelRed , uint16_t channelGreen , uint16_t channelBlue , bool autoWrite , uint16_t x, uint16_t y );
+	ColorLamp();
+	ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite = true, bool commonAnode = false, uint16_t x = 0, uint16_t y = 0 );
     ~ColorLamp();
     
+	void setChannel( uint16_t channelRed, uint16_t channelGreen = 0, uint16_t channelBlue = 0);
+	
 	void update();
-    void rgbTo( uint8_t r, uint8_t g, uint8_t b );
-	void rgbTo( uint8_t r, uint8_t g, uint8_t b, uint32_t duration);
-	void hsbTo( uint8_t h, uint8_t s, uint8_t b );
-	void hsbTo( uint8_t h, uint8_t s, uint8_t b , uint32_t duration);
-	void hueTo( uint8_t hTo,  		uint32_t duration = DEFAULT_DURATION);
+    
+	void rgbTo( uint8_t r, uint8_t g, uint8_t b, uint32_t duration = DEFAULT_DURATION);
+	void hsbTo( uint8_t h, uint8_t s, uint8_t b, uint32_t duration = DEFAULT_DURATION, bool shortcutThroughZero = true);
+	
+	void hueTo( uint8_t hTo,  		uint32_t duration = DEFAULT_DURATION, bool shortcutThroughZero = true);
 	void saturationTo( uint8_t sTo, uint32_t duration = DEFAULT_DURATION);
-	void intensityTo(uint8_t to, 	uint32_t duration = DEFAULT_DURATION);
+	
+	void setRGB( uint8_t r, uint8_t g, uint8_t b, bool stopAnimation = true );
+	void setHSB( uint8_t h, uint8_t s, uint8_t b, bool stopAnimation = true );
+	
+	void setHue( uint8_t h , bool stopAnimation = true);
+	void setSaturation( uint8_t s , bool stopAnimation = true);
+	
+	/* Implemented, but not yet functioning properly. Conversion through HSB goes wrong
+	void redTo(uint8_t r,  	uint32_t duration = DEFAULT_DURATION);
+	void greenTo(uint8_t g, uint32_t duration = DEFAULT_DURATION);
+	void blueTo(uint8_t b,  uint32_t duration = DEFAULT_DURATION);
+	
+	void setRed(uint8_t r, bool stopAnimation = true);
+	void setGreen(uint8_t g, bool stopAnimation = true);
+	void setBlue(uint8_t b, bool stopAnimation = true);
+	*/
+	
+	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );
+	void setCommonAnode( bool commonAnode = true);
 	
 	uint8_t getRed();
 	uint8_t getGreen();
@@ -45,17 +62,11 @@ class ColorLamp:public LED
     uint16_t getChannelRed();
 	uint16_t getChannelGreen();
 	uint16_t getChannelBlue();
+	
+	bool isAnimating();
+	bool isAnimating(uint8_t param);
 
   private:
-	/* setRGB is private because animation errors will occur 
-	(also in intensity animations) if endRGB is not used 
-	to define the desired rgb value; use rgbTo() instead */
-    void setRGB( uint8_t r, uint8_t g, uint8_t b );
-	void setHSB( uint8_t h, uint8_t s, uint8_t b );
-	
-	void setHue( uint8_t h );
-	void setSaturation( uint8_t s );
-	
 	uint16_t _channelRed; 
 	uint16_t _channelGreen; 
     uint16_t _channelBlue; 
@@ -71,10 +82,7 @@ class ColorLamp:public LED
 	uint8_t _saturation;
 	uint8_t _brightness;
 	
-	uint8_t _startHue;
-	uint8_t _endHue;
-	uint8_t _startSaturation;
-	uint8_t _endSaturation;
+	bool _commonAnode;
 };
 
 #endif

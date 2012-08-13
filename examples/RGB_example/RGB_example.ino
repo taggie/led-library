@@ -1,6 +1,7 @@
 #include <ColorLamp.h>
 
-ColorLamp * lamp  =  new ColorLamp( 2, true ); 
+/** Create an RGB lamp on pins 9, 10 and 11. Unless specified otherwise (by adding a 'false' parameter) this will automatically write values to these arduino pins. **/
+ColorLamp * lamp  =  new ColorLamp( 9, 10, 11 ); 
 
 // Or create an Array of LEDs
 // ColorLamp * lamps[10]; 
@@ -9,7 +10,7 @@ void setup()
 {
 /** In case of an array, initialize it
   for (int i=0; i < 10; i++) {
-      lamps[i] = new ColorLamp( );
+      lamps[i] = new ColorLamp( 2*i );
   }
 **/
   lamp->intensityTo( 255, 1000 ); // Make sure the light is turned on so we can see what is happening
@@ -22,10 +23,15 @@ void loop()
   {
     if (lamp->getHue() == 0) // Returns the current Hue Value of the LED
     {
-      lamp->hueTo( 255, 2000 ); // Sets the desired Hue value and the time (in millis) it should take to get there
+      /** Sets the desired Hue value and the time (in millis) it should take to get there.
+          We want to ping-pong through the color circle; therefore we set 'shortcutThroughZero' to false.
+          If we would not do that, the shortest route from 0 to 255 and vice versa would be to hop directly to the other value
+          which would leave the LED red...
+      **/
+      lamp->hueTo( 255, 2000, false ); 
     }
     else {
-      lamp->hueTo( 0, 2000 );
+      lamp->hueTo( 0, 2000, false );
     }
   }
   /**
