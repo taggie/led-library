@@ -1,16 +1,11 @@
 #include <LED.h>
 
 /**
-  // Set channel to the arduino pin to which the LED is connected, or use if for another channel (such as DMX Channel)
-  LED( uint32_t channel );
+  // Set channel to the arduino pin to which the LED is connected, or use it for another channel (such as DMX Channel)
+  LED * led1  =  new LED( uint32_t channel );
   // Set AutoWrite to TRUE if you use Arduino pins to directly control the LED value. The intensity will automatically be written to the ardunio pin ('channel') on update()
-  LED( uint32_t channel, bool autoWrite );
-  // x and y can be used to let a light body move across a 2D plane
-  LED( uint32_t channel, bool autoWrite, uint16_t x, uint16_t y );
-  // use intensity and on to predetermine the values; defaults are respectively 0 and true 
-  LED( uint32_t channel, bool autoWrite, uint16_t x, uint16_t y, uint8_t intensity, bool on );
+  LED * led1  =  new LED( uint32_t channel, bool autoWrite );
 **/
-
 LED * led1  =  new LED( 3, true ); 
 
 // Or create an Array of LEDs
@@ -23,6 +18,10 @@ void setup()
       lamps[i] = new LED( );
   }
 **/
+
+/** Optionally, you may set the animation type for our LED to QUADRATIC with easing in and/or out;
+    The default animation is LINEAR without easing **/
+//   led1->setAnimationType( QUADRATIC , true , false );  
 }
 
 void loop()

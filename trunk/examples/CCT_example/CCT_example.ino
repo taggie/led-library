@@ -1,13 +1,18 @@
 #include <CctLamp.h>
 
-Cct * lamp  =  new Cct( 5, true ); 
+/** Create a lamp object with the warm white color on channel 5
+    The cool white channel is automatically set warmWhite + 1 (6 in this case)
+    You may also set     
+**/
+CctLamp * lamp  =  new CctLamp( 5 ); 
 
-// Or create an Array of LEDs
+/** Or create an Array of LEDs **/
 // Cct * lamps[10]; 
 
 void setup()
 {
-/** In case of an array, initialize it
+/** In case of an array, initialize it, remember to set the channels correctly **/
+/**
   for (int i=0; i < 10; i++) {
       lamps[i] = new Cct( );
   }

@@ -1,4 +1,4 @@
-/**
+/*
  * ColorLamp.h
  * 
  * Copyright (c) 2011 
@@ -7,13 +7,23 @@
  
  * Intelligent Lighting Institute (ILI), TU/e.
  *
- * All rights reserved. LAST UPDATE: 30-05-2012
-**/
+ * All rights reserved. LAST UPDATE: 13-08-2012
+*/
 #include "ColorLamp.h"
-#include "Calculate.h"
 
-/** CONSTRUCTORS **/
-ColorLamp::ColorLamp()
+/** hueAnim is the object that is used to manage the hue animations **/
+Animation * hueAnim;
+
+/** saturationAnim is the object that is used to manage the saturation animations **/
+Animation * saturationAnim;
+
+/* CONSTRUCTORS */
+
+/** Empty ColorLamp Constructor. Do not use! If you use this, make sure to 
+    set the channel manually afterwards using setChannel; 
+	this automatically assumes you use autoWrite (write to the arduino pins immediatily). 
+	If you use another method (e.g. DMX), use the full constructor **/
+ ColorLamp::ColorLamp( )
 {
   _x          	=  	0;
   _y          	=  	0;
@@ -23,74 +33,25 @@ ColorLamp::ColorLamp()
   _red			=	0;
   _green		=	0;
   _blue			=	0;
-  _channel	 	=  	0;
-  _channelRed 	=  	0;
-  _channelGreen =  	1;
-  _channelBlue =  	2;
+  _channel	 	=  	1;
+  _channelRed 	=  	1;
+  _channelGreen =  	_channelRed + 1;
+  _channelBlue 	=  	_channelRed + 2;
   _on		 	=	true;
-  _autoWrite	=	false;
-  _isAnimating	=	false;
-  _animType		= 	0;
-  // Serial.println("EMPTY CONSTRUCTIR CALL");
+  _autoWrite	=	true;
+  _commonAnode 	= 	false;
+  hueAnim  		=  	new Animation();
+  saturationAnim  = new Animation();
 }
-ColorLamp::ColorLamp( uint16_t channelRed  )
-{
-  _x          	=  	0;
-  _y          	=  	0;
-  _hue			= 	0;
-  _saturation	= 	0;
-  _intensity 	=  	0;
-  _red			=	0;
-  _green		=	0;
-  _blue			=	0;
-  _channel	 	=  	channelRed;
-  _channelRed 	=  	channelRed;
-  _channelGreen =  	channelRed + 1;
-  _channelBlue =  	channelRed + 2;
-  _on		 	=	true;
-  _autoWrite	=	false;
-  _isAnimating	=	false;
-  _animType		= 	0;
-}
-ColorLamp::ColorLamp( uint16_t channelRed, bool autoWrite )
-{
-  _x          	=  	0;
-  _y          	=  	0;
-  _hue			= 	0;
-  _saturation	= 	0;
-  _intensity 	=  	0;
-  _red			=	0;
-  _green		=	0;
-  _blue			=	0;
-  _channel	 	=  	channelRed;
-  _channelRed 	=  	channelRed;
-  _channelGreen =  	channelRed + 1;
-  _channelBlue =  	channelRed + 2;
-  _on		 	=	true;
-  _autoWrite	=	autoWrite;
-  _isAnimating	=	false;
-  _animType		= 	0;
-}
-ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite )
-{
-  _x          	=  	0;
-  _y          	=  	0;
-  _hue			= 	0;
-  _saturation	= 	0;
-  _intensity 	=  	0;
-  _red			=	0;
-  _green		=	0;
-  _blue			=	0;
-  _channel	 	=  	channelRed;
-  _channelRed 	=  	channelRed;
-  _channelGreen =  	channelGreen;
-  _channelBlue =  	channelBlue;
-  _on		 	=	true;
-  _autoWrite	=	autoWrite;
-  _isAnimating	=	false;
-  _animType		= 	0;
-}
-ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite, uint16_t x, uint16_t y )
+
+/** Colorlamp Constructor. The first three parameters set channels for Red, Green and Blue. 
+	If autowrite is set to true; the arduino will write the output values to the arduino pins.
+	Set autoWrite to false if you do not connect your LEDs to arduino pins directly
+    but use other channels (e.g. DMX, shift registers, TLC5940, etc.
+	If you have LEDs with a common anode (common +), you set that to true in order to invert the output values.
+ **/
+
+ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue, bool autoWrite, bool commonAnode, uint16_t x, uint16_t y )
 {
   _x          	=  	x;
   _y          	=  	y;
@@ -102,259 +63,369 @@ ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t chann
   _blue			=	0;
   _channel	 	=  	channelRed;
   _channelRed 	=  	channelRed;
-  _channelGreen =  	channelGreen;
-  _channelBlue =  	channelBlue;
+  /* If the user only supplies the red channel which is not on channel 1, we infer the green and blue channels from that
+	Otherwise we uassume the correct channels are entered by the user or the default channels 1, 2 and 3 apply
+  */
+  _channelGreen   =  	channelGreen;
+  _channelBlue 	=  	channelBlue;
   _on		 	=	true;
   _autoWrite	=	autoWrite;
-  _isAnimating	=	false;
-  _animType		= 	0;
+  _commonAnode 	= 	commonAnode;
+  hueAnim  		=  	new Animation();
+  saturationAnim  = new Animation();
+  
+  if ( _autoWrite )
+  {
+	pinMode( _channelRed, OUTPUT );
+	pinMode( _channelGreen, OUTPUT );
+	pinMode( _channelBlue, OUTPUT );
+  }
+  _hasNewValue = true;
+  update();
 }
 
+/** Default Destructor **/
 ColorLamp::~ColorLamp()
 {
 }
 
-/** VOID FUNCTIONS **/
+/* VOID FUNCTIONS */
 
-void ColorLamp::setRGB( uint8_t r, uint8_t g, uint8_t b )
+/** Allows you to set the channel of the LED. if autoWrite is on, this is the Arduino pin that is actuated**/
+void ColorLamp::setChannel( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue )
 {
-	if ( _red != r || _green != g || _blue != b ) 
+	if (channelGreen == 0 && channelBlue == 0) // This is the case if the user does not supply arguments for green and blue
 	{
-		_red 	= constrain( r, 0, 255 );
-		_green 	= constrain( g, 0, 255 );
-		_blue 	= constrain( b, 0, 255 );
-		_hasNewValue = true;
+		channelGreen = channelRed + 1;
+		channelBlue = channelRed + 2;
+	}
+	_channel	=	channelRed;
+	_channelRed 	=  	channelRed;
+	_channelGreen   =  	channelGreen;
+	_channelBlue 	=  	channelBlue;
+
+	if ( _autoWrite )
+	{
+		pinMode( _channelRed, OUTPUT );
+		pinMode( _channelGreen, OUTPUT );
+		pinMode( _channelBlue, OUTPUT );
 	}
 }
 
-void ColorLamp::setHSB( uint8_t h, uint8_t s, uint8_t b )
+/** This function immidatily sets the RED, GREEN and BLUE to the specified values. 
+	Values are changed immediatily, but only actuated in the update() function.
+	When setting RGB; the values are first converted to HSB,
+	Conversion back to RGB happens during the update() function.
+	Any ongoing animations are stopped unless 'stopanimation' is set to false.
+**/
+void ColorLamp::setRGB( uint8_t r, uint8_t g, uint8_t b, bool stopAnimation )
 {
-	_hue 		= constrain( h, 0, 255 );
-	_saturation = constrain( s, 0, 255 );
-	_intensity 	= constrain( b, 0, 255 );
+	if ( _red != r || _green != g || _blue != b ) 
+	{	
+		uint8_t hsb[3] = { 0 , 0 , 0 };
+		uint8_t * hsbArray = rgbToHsb(r, g, b, hsb );
+		
+		setHSB(hsbArray[0], hsbArray[1], hsbArray[2], stopAnimation);
+	}
 }
 
-void ColorLamp::setHue( uint8_t h )
+/*
+void ColorLamp::setRed( uint8_t r, bool stopAnimation )
 {
-	_hue 		= constrain( h, 0, 255 );
+	uint8_t hsb[3] = { 0 , 0 , 0 };
+	uint8_t * hsbArray = rgbToHsb(r, _green, _blue, hsb );
+	
+	setHSB(hsbArray[0], hsbArray[1], hsbArray[2], stopAnimation);
 }
 
-void ColorLamp::setSaturation( uint8_t s )
+void ColorLamp::setGreen( uint8_t g, bool stopAnimation )
 {
-	_saturation = constrain( s, 0, 255 );
+	uint8_t hsb[3] = { 0 , 0 , 0 };
+	uint8_t * hsbArray = rgbToHsb(_red, g, _blue, hsb );
+	
+	setHSB(hsbArray[0], hsbArray[1], hsbArray[2], stopAnimation);
 }
 
-void ColorLamp::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo )
+void ColorLamp::setBlue( uint8_t b, bool stopAnimation )
 {
-	rgbTo( rTo , gTo , bTo , DEFAULT_DURATION );
+	uint8_t hsb[3] = { 0 , 0 , 0 };
+	uint8_t * hsbArray = rgbToHsb(_red, _green, b, hsb );
+	
+	setHSB(hsbArray[0], hsbArray[1], hsbArray[2], stopAnimation);
+} */
+
+/** This function immidatily sets the hue, saturation and intensity to the specified values.
+	Values are changed immediatily, but only actuated in the update() function. 
+	Any ongoing animations are stopped unless 'stopAnimation' is set to false.
+**/
+void ColorLamp::setHSB( uint8_t h, uint8_t s, uint8_t b, bool stopAnimation )
+{
+	if ( _hue != h || _saturation != s || _intensity != b ) 
+	{
+		_hue 		= constrain( h, 0, 255 );
+		_saturation = constrain( s, 0, 255 );
+		_intensity 	= constrain( b, 0, 255 );
+		_hasNewValue	= true;
+		if (stopAnimation)
+		{
+			intensityAnim->stopAnimation();
+			hueAnim->stopAnimation();
+			saturationAnim->stopAnimation();
+		}
+	}
 }
 
+/** This function immidatily sets the Hue to the specified value and
+	Values are changed immediatily, but only actuated in the update() function.
+	maintains the other current variables. Any ongoing hue animation is stopped unless 'stopAnimation' is set to false.
+**/
+void ColorLamp::setHue( uint8_t h, bool stopAnimation )
+{
+	if( h != _hue )
+	{
+		_hue 			= constrain( h, 0, 255 );
+		_hasNewValue	= true;
+		if (stopAnimation)
+		{
+			hueAnim->stopAnimation();
+		}
+	}
+}
+
+/** This function immidatily sets the saturation to the specified value and
+	maintains the other current variables. Any ongoing saturation animation is stopped unless 'stopAnimation' is set to false.
+	Values are changed immediatily, but only actuated in the update() function.
+**/
+void ColorLamp::setSaturation( uint8_t s, bool stopAnimation )
+{
+	if( s != _saturation )
+	{
+		_saturation = constrain( s, 0, 255 );
+		_hasNewValue	= true;
+		if (stopAnimation)
+		{
+			saturationAnim->stopAnimation();
+		}
+	}
+	
+}
+
+/** This function allows an animation in RGB terms.
+	When animating RGB; the values are first converted to HSB
+	Conversion back to RGB happens during the update function.
+**/
 void ColorLamp::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo, uint32_t duration )
 {
 	uint8_t hsb[3] = { 0 , 0 , 0 };
 	uint8_t * hsbArray = rgbToHsb(rTo, gTo, bTo, hsb );
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startHue		= 	_hue;
-	_startSaturation= 	_saturation;
-	_startIntensity	= 	_intensity;
-	_endHue 		=	hsbArray[0];
-	_endSaturation	=	hsbArray[1];
-	_endIntensity	=	hsbArray[2];
-	_animType		= 	0;
+	
+	hsbTo(hsbArray[0], hsbArray[1], hsbArray[2], duration);
 }
 
-void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo )
+/*
+void ColorLamp::redTo( uint8_t rTo, uint32_t duration )
 {
-	hsbTo( hTo , sTo , bTo , DEFAULT_DURATION );
+	uint8_t hsb[3] = { 0 , 0 , 0 };
+	uint8_t * hsbArray = rgbToHsb(rTo, _green, _blue, hsb );
+	
+	hsbTo(hsbArray[0], hsbArray[1], hsbArray[2], duration);
 }
 
-void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration )
+void ColorLamp::greenTo( uint8_t gTo, uint32_t duration )
 {
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startHue		= 	_hue;
-	_startSaturation= 	_saturation;
-	_startIntensity	= 	_intensity;
-	_endHue 		=	hTo;
-	_endSaturation	=	sTo;
-	_endIntensity	=	bTo;
-	_animType		= 	0;
+	uint8_t hsb[3] = { 0 , 0 , 0 };
+	uint8_t * hsbArray = rgbToHsb(_red, gTo, _blue, hsb );
+	
+	hsbTo(hsbArray[0], hsbArray[1], hsbArray[2], duration);
 }
 
-void ColorLamp::hueTo( uint8_t hTo, uint32_t duration )
+void ColorLamp::blueTo( uint8_t bTo, uint32_t duration )
 {
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startHue		= 	_hue;
-	/* the _startValues for Brightness and Saturation 
-	are	also updated to the current values to 
-	make sure that an ongoing animation is not disturbed 
-	*/
-	_startSaturation= 	_saturation;
-	_startIntensity	= 	_intensity;
-	_endHue 		=	hTo;
-	_animType		= 	0;
+	uint8_t hsb[3] = { 0 , 0 , 0 };
+	uint8_t * hsbArray = rgbToHsb(_red, _green, bTo, hsb );
+	
+	hsbTo(hsbArray[0], hsbArray[1], hsbArray[2], duration);
+} */
+
+/** This function is used for animating to a desired HSB value. The duration of the animation can be set in millis().
+	shortcutThroughZero allows use of the hue color wheel as expected. If the shortest route from start value to end value goes through zero (red)
+	we will take this route by default. Set it to false if you wish to take the longer route.
+	**/
+void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration, bool shortcutThroughZero )
+{	
+	hueAnim->startAnimation( _hue, constrain(hTo, 0, 255), duration, shortcutThroughZero );
+	saturationAnim->startAnimation( _saturation, constrain(sTo, 0, 255), duration );
+	intensityAnim->startAnimation( _intensity, constrain(bTo, 0, 255), duration );
 }
 
+/** This function is used for animating to a desired HUE value while maintaining Saturation and Brightness values.
+	The duration of the animation can be set in millis().
+	shortcutThroughZero allows use of the hue color wheel as expected. If the shortest route from start value to end value goes through zero (red)
+	we will take this route by default. Set it to false if you wish to take the longer route.
+	**/
+void ColorLamp::hueTo( uint8_t hTo, uint32_t duration, bool shortcutThroughZero )
+{
+	hueAnim->startAnimation( _hue, constrain(hTo, 0, 255), duration, shortcutThroughZero );
+}
+
+/** This function is used for animating to a desired Saturation value while maintaining Hue and Brightness values.
+	The duration of the animation can be set in millis().
+	**/
 void ColorLamp::saturationTo( uint8_t sTo, uint32_t duration )
 {
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startSaturation= 	_saturation;
-	/* the _startValues for Hue and Brightness 
-	are	also updated to the current values to 
-	make sure that an ongoing animation is not disturbed 
-	*/
-	_startHue		= 	_hue;
-	_startIntensity	= 	_intensity;
-	_endSaturation 	=	sTo;
-	_animType		= 	0;
+	saturationAnim->startAnimation( _saturation, constrain(sTo, 0, 255), duration );
 }
 
-void ColorLamp::intensityTo( uint8_t to, uint32_t duration )
+/** Tells the program you are using LEDs with a common anode (common +), if set to true (default = false).
+	This will invert the output values. If autoWrite == true, the arduino will make the ouput pins LOW in order to 
+	turn the LEDs on. If autoWrite == false, getRed(), getGreen() and getBlue() will return the inverted value (0 if it is full on). 
+ **/
+void ColorLamp::setCommonAnode( bool commonAnode )
 {
-	_isAnimating	=	true;
-	_startTime		=	millis();
-	_endTime		=	millis() + duration;
-	_startIntensity		=	_intensity;
-	/* the _startValues for Hue and Saturation 
-	are	also updated to the current values to 
-	make sure that an ongoing animation is not disturbed 
-	*/
-	_startHue		= 	_hue;
-	_startSaturation= 	_saturation;
-	_endIntensity	=	to;
-	_animType		= 	0;
+	_commonAnode = commonAnode;
 }
 
+/** Sets the animation type for a colorLamp. The available animation types are LINEAR (no easing) and QUADRATIC. 
+	QUADRATIC animations allow independant easing in and out **/
+void ColorLamp::setAnimationType( uint8_t animType, bool easeIn, bool easeOut )
+{
+	intensityAnim->setAnimationType( animType, easeIn, easeOut );
+	hueAnim->setAnimationType( animType, easeIn, easeOut );
+	saturationAnim->setAnimationType( animType, easeIn, easeOut );
+}
+
+/** Update Function; should be called every loop to set, animate and actuate the lamps **/
 void ColorLamp::update()
 {
-	if( _isAnimating )
+	if( hueAnim->isAnimating() )
 	{
-		//Check if the animation is still going on
-		if( millis() < _endTime )
-		{
-			uint32_t t	=	( millis() - _startTime );	// current time
-			uint16_t bi	=	_startIntensity;					// begin Intensity
-			uint16_t bh	=	_startHue;					// begin Hue
-			uint16_t bs	=	_startSaturation;			// begin Saturation
-			int      ci	=	( _endIntensity - _startIntensity );	// difference in intensity 	(may be negative, this results in problems in some _animTypes)
-			int      ch	=	( _endHue - _startHue );	// difference in hue 		(may be negative, this results in problems in some _animTypes)
-			int      cs	=	( _endSaturation - _startSaturation );	// difference in Saturation
-			uint32_t d	=	_endTime - _startTime;		// duration
-			
-			switch( _animType )
-			{
-				/* FIX: Functions other than linear may not work as the float of c can somehow not be neagtive. */
-				/*case QUADRATIC:
-					animatedIntensity	=	Calculate.quadratic( (float)t, (float)b, (float)c, (float)d, true, true);
-					break;
-				case EXPONENTIAL:
-					animatedIntensity	=	Calculate.exponential( (float)t, (float)b, (float)c, (float)d, true, true );
-					break;
-				case CIRCULAR:
-					animatedIntensity	=	Calculate.circular( (float)t, (float)b, (float)c, (float)d, true, true );
-					break;
-				case SINUS:
-					animatedIntensity	=	Calculate.sinus( (float)t, (float)b, (float)c, (float)d, true, true );
-					break;	*/	
-				default:
-					/* we are animating the intensity and/or rgb 
-					change the values that are being animated */
-					if (_endIntensity != _intensity) 	
-					{ 	
-						setIntensity(	Calculate.linear( t, bi, ci, d ) );
-					}
-					if (_endHue != _hue) 		// we are animating the CCT
-					{ 			
-						setHue(			Calculate.linear( t, bh, ch, d ) );
-					}
-					if (_endSaturation != _saturation) 		// we are animating the CCT
-					{ 			
-						setSaturation(			Calculate.linear( t, bs, cs, d ) );
-					}
-					break;
-			}
-			/*  Update the RGB values to reflect the changes for actuation */
-			uint8_t rgb[3];
-			uint8_t * rgbArray = hsbToRgb(_hue, _saturation, _intensity, rgb );
-			setRGB(	rgbArray[0], rgbArray[1], rgbArray[2] );
-		}
+		setHue( hueAnim->getValue(), false );
+	}
+	if( saturationAnim->isAnimating() )
+	{
+		setSaturation( saturationAnim->getValue(), false );
+	}
+	if( intensityAnim->isAnimating() )
+	{
+		setIntensity( intensityAnim->getValue(), false );
+	}
+	
+	/* If there is no animation going on and the device is turned off,
+	   and the intensity is not set to 0, turn the LED off */
+	if( !intensityAnim->isAnimating() && !hueAnim->isAnimating() && !saturationAnim->isAnimating() && !_on && _intensity > 0 )
+	{
+		setIntensity( 0, false );
+	}
+	
+	if ( _hasNewValue )
+	{
+		/*  Update the RGB values based on HSB to reflect the changes for actuation 
+			This overwrites the current RGB values, even if they were recently set.
+			However, this is not a problem because if an RGB value is set; 
+			it is also converted to matching HSB values that are thus up-to-date.
+		*/
+		uint8_t rgb[3];
+		uint8_t * rgbArray = hsbToRgb(_hue, _saturation, _intensity, rgb );
 		
-		else if( millis() >= _endTime)
-		{
-			setHSB( _endHue, _endSaturation, _endIntensity );
-			/*  Update the RGB values to reflect the changes for actuation */
-			uint8_t rgb[3];
-			uint8_t * rgbArray = hsbToRgb(_hue, _saturation, _intensity, rgb );
-			setRGB(	rgbArray[0], rgbArray[1], rgbArray[2] );
-			_isAnimating = false;
-		}
+		_red 	= constrain( rgbArray[0], 0, 255 );
+		_green 	= constrain( rgbArray[1], 0, 255 );
+		_blue 	= constrain( rgbArray[2], 0, 255 );
 		
 		if( _autoWrite )
 		{
-			analogWrite(_channelRed, _red);
-			analogWrite(_channelGreen, _green);
-			analogWrite(_channelBlue, _blue);
+			if ( !_commonAnode ) 
+			{
+				analogWrite(_channelRed, _red);
+				analogWrite(_channelGreen, _green);
+				analogWrite(_channelBlue, _blue);
+			}
+			else 
+			{
+				analogWrite(_channelRed, 255-_red);
+				analogWrite(_channelGreen, 255-_green);
+				analogWrite(_channelBlue, 255-_blue);
+			}
+			_hasNewValue = false;
 		}
-	}
-	/** If there is no animation going on,
-		and the device is turned off,
-		and the intensity is not set to 0,
-		turn the LED off
-	**/
-	if( !_isAnimating && !_on && _intensity > 0 )
-	{
-		setIntensity( 0 );
 	}
 }
 
-/** INTEGER FUNCTIONS **/
+/* INTEGER FUNCTIONS */
+
+/** Returns the set channel for the RED LED **/
 uint16_t ColorLamp::getChannelRed()
 {
 	return _channelRed;
 }
+/** Returns the set channel for the GREEN LED **/
 uint16_t ColorLamp::getChannelGreen()
 {
 	return _channelGreen;
 }
+/** Returns the set channel for the BLUE LED **/
 uint16_t ColorLamp::getChannelBlue()
 {
 	return _channelBlue;
 }
 
+/** This function returns the current RED output value. Be careful that they are inverted if commonAnode is set to true! **/
 uint8_t ColorLamp::getRed()
 {
-	return _red;
-}
-uint8_t ColorLamp::getGreen()
-{
-	return _green;
-}
-uint8_t ColorLamp::getBlue()
-{
-	return _blue;
+	if ( !_commonAnode )
+	{	
+		return _red;
+	}
+	else 
+	{
+		return 255-_red;
+	}
 }
 
+/** This function returns the current GREEN output value. Be careful that they are inverted if commonAnode is set to true! **/
+uint8_t ColorLamp::getGreen()
+{
+	if ( !_commonAnode )
+	{	
+		return _green;
+	}
+	else 
+	{
+		return 255-_green;
+	}
+}
+
+/** This function returns the current GREEN output value. Be careful that they are inverted if commonAnode is set to true! **/
+uint8_t ColorLamp::getBlue()
+{
+	if ( !_commonAnode )
+	{	
+		return _blue;
+	}
+	else 
+	{
+		return 255-_blue;
+	}
+}
+
+/** This function returns the current HUE output value. **/
 uint8_t ColorLamp::getHue()
 {
 	return _hue;
 }
+
+/** This function returns the current SATURATION output value. **/
 uint8_t ColorLamp::getSaturation()
 {
 	return _saturation;
 }
+
+/** This function returns the current INTENSITY output value. **/
 uint8_t ColorLamp::getBrightness()
 {
 	return _intensity;
 }
 
-/** This function is based on the one implemented 
+/** This function converts RGB to HSB and is based on the one implemented 
 by robert Atkins in the RGB Converter Library
 https://github.com/ratkins/RGBConverter
 */
@@ -395,7 +466,7 @@ uint8_t * ColorLamp::rgbToHsb(uint8_t r, uint8_t g, uint8_t b, uint8_t hsb[] )
 }
 
 
-/** This function is based on the one implemented 
+/** This function converts RGB to HSB and is based on the one implemented 
 by Elco Jacobs in the ShiftPWM Library
 https://github.com/elcojacobs/ShiftPWM
 */
@@ -451,4 +522,36 @@ uint8_t * ColorLamp::hsbToRgb( uint8_t h, uint8_t s, uint8_t v, uint8_t rgb[] )
     rgb[1] = g;
     rgb[2] = b;
 	return rgb;
+}
+
+/* BOOL FUNCTIONS */
+
+/** This function returns true if any animation (either HUE, SATURATION, BRIGHTNESS) is ongoing in this ColorLamp **/ 
+bool ColorLamp::isAnimating()
+{
+	if ( !intensityAnim->isAnimating() && !hueAnim->isAnimating() && !saturationAnim->isAnimating() )
+	{
+		return false;
+	}
+	else 
+	{
+		return true;
+	}
+}
+
+/** Returns true if the supplied parameter (HUE, SATURATION, BRIGHTNESS) is animating **/
+bool ColorLamp::isAnimating(uint8_t param)
+{
+	switch ( param )
+	{
+		case INTENSITY:
+			return intensityAnim->isAnimating();
+		break;
+		case HUE:
+			return hueAnim->isAnimating();
+		break;
+		case SATURATION:
+			return saturationAnim->isAnimating();
+		break;
+	}
 }

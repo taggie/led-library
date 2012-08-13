@@ -1,4 +1,4 @@
-/**
+/*
  * CctLamp.h
  * 
  * Copyright (c) 2011 
@@ -7,8 +7,8 @@
  
  * Intelligent Lighting Institute (ILI), TU/e.
  *
- * All rights reserved. LAST UPDATE: 30-05-2012
-**/
+ * All rights reserved. LAST UPDATE: 13-08-2012
+*/
 
 #ifndef Cct_h
 #define Cct_h
@@ -18,18 +18,17 @@
 class CctLamp:public LED
 {
   public:
-  	
-    CctLamp();
-	CctLamp( uint16_t channelWarm );
-	CctLamp( uint16_t channelWarm , bool autoWrite );
+	CctLamp( uint16_t channelWarm = 1 , bool autoWrite = true );
     CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite );
 	CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite , uint16_t x, uint16_t y );
     ~CctLamp();
     
 	void update();
 	void cctTo( uint8_t cct , uint32_t duration = DEFAULT_DURATION);
-	void intensityTo( uint8_t to , uint32_t duration = DEFAULT_DURATION);
 	void cctLampTo( uint8_t intens , uint8_t cct, uint32_t duration = DEFAULT_DURATION);
+    void setCct( uint8_t cct, bool stopAnimation = true );
+	// Possibly include void setCctLamp( uint8_t intens , uint8_t cct );
+	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );
 	
 	uint8_t getCct();
     uint8_t getIntensityWarm();
@@ -37,26 +36,20 @@ class CctLamp:public LED
 	
     uint16_t getChannelWarm();
 	uint16_t getChannelCool();
+	
+	bool isAnimating();
+	bool isAnimating(uint8_t param);
 
   private:
-	/* setCct is private because animation errors will occur 
-	(also in intensity animations) if endCct is not used 
-	to define the desired cct value */
-    void setCct( uint8_t cct );
-	
-	/* setIntensityWarm/Cool is private to ensure that 
-	actuation takes place */
 	void setIntensityWarm( uint8_t intensityWarm );
 	void setIntensityCool( uint8_t intensityCool );
 	
 	uint16_t _channelWarm; 
 	uint16_t _channelCool; 
     uint8_t _cct;
-		
+	
 	uint8_t _intensityWarm;
 	uint8_t _intensityCool; 
-	uint8_t _startCct;
-	uint8_t _endCct;
 	
 	uint8_t calculateIntensityWarm();
 	uint8_t calculateIntensityCool();
