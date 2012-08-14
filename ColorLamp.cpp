@@ -9,6 +9,7 @@
  *
  * All rights reserved. LAST UPDATE: 13-08-2012
 */
+
 #include "ColorLamp.h"
 
 /** hueAnim is the object that is used to manage the hue animations **/
@@ -19,10 +20,9 @@ Animation * saturationAnim;
 
 /* CONSTRUCTORS */
 
-/** Empty ColorLamp Constructor. Do not use! If you use this, make sure to 
-    set the channel manually afterwards using setChannel; 
-	this automatically assumes you use autoWrite (write to the arduino pins immediatily). 
-	If you use another method (e.g. DMX), use the full constructor **/
+/** Empty ColorLamp Constructor. If you use this, make sure to set the channel manually afterwards using setChannel(); 
+	this automatically assumes you use autoWrite (write to the arduino pins immediatily) and will set the pinMode for this channel to OUTPUT. 
+	If you use another method (e.g. DMX), use the full constructor and set autoWrite to false **/
  ColorLamp::ColorLamp( )
 {
   _x          	=  	0;
@@ -91,7 +91,9 @@ ColorLamp::~ColorLamp()
 
 /* VOID FUNCTIONS */
 
-/** Allows you to set the channel of the LED. if autoWrite is on, this is the Arduino pin that is actuated**/
+/** Allows you to set the channel of the LED. if autoWrite is on, this is the Arduino pin that is actuated
+	If only one argument is supplied, the green and blue channel are the subsequent channel numbers
+**/
 void ColorLamp::setChannel( uint16_t channelRed, uint16_t channelGreen, uint16_t channelBlue )
 {
 	if (channelGreen == 0 && channelBlue == 0) // This is the case if the user does not supply arguments for green and blue

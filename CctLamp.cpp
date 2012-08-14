@@ -134,7 +134,8 @@ void CctLamp::cctTo( uint8_t cct, uint32_t duration )
 	cctAnim->startAnimation( _cct, constrain(cct, 0, 100), duration );
 }
 
-/** Animates CCT Lamp with all its values; intensity, cct value and duration in millis **/
+/** Animates CCT Lamp with all its values; 
+intensity, cct value and duration in millis **/
 void CctLamp::cctLampTo( uint8_t intens, uint8_t cct, uint32_t duration )
 {	
 	intensityAnim->startAnimation( _intensity, constrain(intens, 0, 255), duration );
@@ -188,7 +189,8 @@ void CctLamp::update()
 
 /* INTEGER FUNCTIONS */
 
-/** Returns the channel to which the warm LED should be connected **/
+/** Returns the channel to which the warm LED should be connected 
+**/
 uint16_t CctLamp::getChannelWarm()
 {
 	return _channelWarm;
