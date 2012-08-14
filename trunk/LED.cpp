@@ -12,7 +12,7 @@
 #include "LED.h"
 #include "Calculate.h"
 
-/* The animation Objects that are used */
+/* The animation object that is used */
   Animation * intensityAnim;
   
 /* CONSTRUCTORS */
@@ -32,8 +32,8 @@ LED::LED()
 }
 
 /** Constructor with supplied channel.
-	autoWrite is true by default but can be set to false 
-	if autoWrite == true, arduino will actuate the LEd on pin 'channel' when update() is called.
+	autoWrite is true by default but can be set to false.
+	If autoWrite == true, Arduino will actuate the pin number defined in 'channel' when update() is called.
 	**/
 LED::LED( uint16_t channel, bool autoWrite )
 {
@@ -52,6 +52,8 @@ LED::LED( uint16_t channel, bool autoWrite )
   update();
 }
 
+/** Constructor with x and y parameters. This functionality is not yet implemented, but in the future will allow you to move light effects over 2D arrays of LEDs.
+	**/
 LED::LED( uint16_t channel, bool autoWrite, uint16_t x, uint16_t y )
 {
   _x          	=  	x;
@@ -70,6 +72,7 @@ LED::LED( uint16_t channel, bool autoWrite, uint16_t x, uint16_t y )
   update();
 }
 
+/** Default Destructor **/
 LED::~LED()
 {
 }

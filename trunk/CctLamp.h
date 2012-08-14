@@ -15,6 +15,7 @@
 
 #include "LED.h"
 
+/** The CctLamp class is used to manage lamps with variable color temperature using 2 channels (warm and cool white) **/
 class CctLamp:public LED
 {
   public:

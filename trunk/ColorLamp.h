@@ -15,6 +15,7 @@
 
 #include "LED.h"
 
+/** The ColorLamp class is used to manage RGB LEDs with 3 channels (R,G and B) **/
 class ColorLamp:public LED
 {
   public:

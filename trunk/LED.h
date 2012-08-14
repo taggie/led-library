@@ -1,4 +1,4 @@
-/**
+/*
  * LED.h
  * 
  * Copyright (c) 2011 
@@ -8,7 +8,7 @@
  * Intelligent Lighting Institute (ILI), TU/e.
  *
  * All rights reserved. LAST UPDATE: 13-08-2012
-**/
+*/
 
 #ifndef LED_h
 #define LED_h
@@ -28,22 +28,31 @@
 
 #include "Animation.h"
 	
-  	/* Animation constants */
-	static const uint8_t LINEAR 		= 0;
-  	static const uint8_t QUADRATIC 		= 1;
-  	static const uint8_t EXPONENTIAL 	= 2;
-  	static const uint8_t CIRCULAR 		= 3;
-  	static const uint8_t SINUS 			= 4;
+/* Animation constants */
+static const uint8_t LINEAR 		= 0;
+static const uint8_t QUADRATIC 		= 1;
+static const uint8_t EXPONENTIAL 	= 2;
+static const uint8_t CIRCULAR 		= 3;
+static const uint8_t SINUS 			= 4;
 
-	static const uint8_t INTENSITY		= 0;
-	static const uint8_t CCT			= 1;
-	static const uint8_t HUE			= 2;
-	static const uint8_t SATURATION		= 3;
+static const uint8_t INTENSITY		= 0;
+static const uint8_t CCT			= 1;
+static const uint8_t HUE			= 2;
+static const uint8_t SATURATION		= 3;
+
+/*! \mainpage The Arduino LED Library
+ *	This Arduino Library is used to manage and control LEDs from the Arduino environment. It allows animation and actuation of single channel LEDs 
+	as well as RGB and CCT (color temperature) LEDs.  <br /><br />
+	<a href="functions_func.html">All available functions are documented here</a> 
+ */
+
+/** \brief The LED class is the main class which is used to manage LEDs and contains all functionality for for single channel LEDs **/
+
+/** The LED class is the main class which is used to manage LEDs and contains all functionality for for single channel LEDs **/
 
 class LED
 {
   public:
-  
     LED();
     LED( uint16_t channel, bool autoWrite = true );
 	LED( uint16_t channel, bool autoWrite, uint16_t x, uint16_t y );
@@ -74,7 +83,7 @@ class LED
     uint16_t getX();
     uint16_t getY();
 	
-	/** The animation Objects that are used **/
+	/** The animation objects that is used to animate the LED **/
 	Animation * intensityAnim;
 
   protected:
