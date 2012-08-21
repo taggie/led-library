@@ -26,14 +26,16 @@
 	#define DEFAULT_DURATION 1000
 #endif
 
-class Animation
-{
-  public:
 	static const uint8_t LINEAR 		= 0;
   	static const uint8_t QUADRATIC 		= 1;
   	static const uint8_t EXPONENTIAL 	= 2;
   	static const uint8_t CIRCULAR 		= 3;
   	static const uint8_t SINUS 			= 4;
+	
+
+class Animation
+{
+  public:
 
 	Animation();
 	~Animation();

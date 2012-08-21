@@ -12,8 +12,9 @@
 #include "LED.h"
 #include "Calculate.h"
 
-/* The animation object that is used */
+/* The animation object that is used *
   Animation * intensityAnim;
+  */
   
 /* CONSTRUCTORS */
 
@@ -44,6 +45,7 @@ LED::LED( uint16_t channel, bool autoWrite )
   _on		 	=	true;
   _autoWrite	=	autoWrite;
   intensityAnim  =  new Animation(); 
+ 
   if ( _autoWrite )
   {
 	pinMode( _channel, OUTPUT );
@@ -115,6 +117,11 @@ void LED::update()
 	Values are changed immediatily, but only actuated in the update() function.
 	An ongoing intensity animation is stopped unless stopAnimation is set to false. 
 **/
+void LED::setBrightness( uint8_t intensity, bool stopAnimation )
+{
+	setIntensity(intensity, stopAnimation);
+}
+
 void LED::setIntensity( uint8_t intensity, bool stopAnimation )
 {
 	if( intensity != _intensity )
