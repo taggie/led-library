@@ -28,17 +28,19 @@
 
 #include "Animation.h"
 	
-/* Animation constants */
+/* Animation constants 
 static const uint8_t LINEAR 		= 0;
 static const uint8_t QUADRATIC 		= 1;
 static const uint8_t EXPONENTIAL 	= 2;
 static const uint8_t CIRCULAR 		= 3;
 static const uint8_t SINUS 			= 4;
+*/
 
-static const uint8_t INTENSITY		= 0;
-static const uint8_t CCT			= 1;
-static const uint8_t HUE			= 2;
-static const uint8_t SATURATION		= 3;
+static const uint8_t PARAM_INTENSITY	= 0;
+static const uint8_t PARAM_CCT			= 1;
+static const uint8_t PARAM_HUE			= 2;
+static const uint8_t PARAM_SATURATION	= 3;
+
 
 /*! \mainpage The Arduino LED Library
  *	This Arduino Library is used to manage and control LEDs from the Arduino environment. It allows animation and actuation of single channel LEDs 
@@ -58,7 +60,8 @@ class LED
 	LED( uint16_t channel, bool autoWrite, uint16_t x, uint16_t y );
     ~LED();
     
-    void update();    
+    void update();
+	void setBrightness( uint8_t intensity, bool stopAnimation = true );
     void setIntensity( uint8_t intensity, bool stopAnimation = true );
     void setX( uint16_t x );
     void setY( uint16_t y );

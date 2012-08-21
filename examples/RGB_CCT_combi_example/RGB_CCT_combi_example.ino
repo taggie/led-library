@@ -62,7 +62,7 @@ void doLEDAnimation()
 void doCCTAnimation()
 {
   // Now we do something with the CCT Lamp
-  if( !warmCoolLamp->isAnimating(CCT)) // Returns true if the LED is in a CCT animation
+  if( !warmCoolLamp->isAnimating(PARAM_CCT)) // Returns true if the LED is in a CCT animation
   {
     if (warmCoolLamp->getCct() == 0) // Returns the current CCT Value of the LED
     {
@@ -78,7 +78,7 @@ void doCCTAnimation()
 void doRGBAnimation()
 {
   // We do something with the RGB DMX Lamp (ping-pong along the hue)
-  if( !rgbLamp->isAnimating(HUE)) // Returns true if the LED is in an animation
+  if( !rgbLamp->isAnimating(PARAM_HUE)) // Returns true if the LED is in an animation
   {
     if (rgbLamp->getHue() == 85) // Returns the current RGB Value of the LED (85 = green)
     {

@@ -22,6 +22,7 @@ class CalculateClass
     float quadratic(float t, float b, float c, float d, boolean easeIn, boolean easeOut);
     float exponential(float t, float b, float c, float d, boolean easeIn, boolean easeOut);
     
+	
     float sinus(float t, float b, float c, float d, boolean easeIn, boolean easeOut);
     
     float circular(float t, float b, float c, float d, boolean easeIn, boolean easeOut);

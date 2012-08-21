@@ -63,9 +63,6 @@ ColorLamp::ColorLamp( uint16_t channelRed, uint16_t channelGreen, uint16_t chann
   _blue			=	0;
   _channel	 	=  	channelRed;
   _channelRed 	=  	channelRed;
-  /* If the user only supplies the red channel which is not on channel 1, we infer the green and blue channels from that
-	Otherwise we uassume the correct channels are entered by the user or the default channels 1, 2 and 3 apply
-  */
   _channelGreen   =  	channelGreen;
   _channelBlue 	=  	channelBlue;
   _on		 	=	true;
@@ -546,13 +543,13 @@ bool ColorLamp::isAnimating(uint8_t param)
 {
 	switch ( param )
 	{
-		case INTENSITY:
+		case PARAM_INTENSITY:
 			return intensityAnim->isAnimating();
 		break;
-		case HUE:
+		case PARAM_HUE:
 			return hueAnim->isAnimating();
 		break;
-		case SATURATION:
+		case PARAM_SATURATION:
 			return saturationAnim->isAnimating();
 		break;
 	}

@@ -288,11 +288,14 @@ bool CctLamp::isAnimating(uint8_t param)
 {
 	switch ( param )
 	{
-		case INTENSITY:
+		case PARAM_INTENSITY:
 			return intensityAnim->isAnimating();
 		break;
-		case CCT:
+		case PARAM_CCT:
 			return cctAnim->isAnimating();
+		break;
+		default:
+			return false;
 		break;
 	}
 }
