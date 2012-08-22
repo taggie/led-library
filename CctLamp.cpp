@@ -19,7 +19,7 @@ CctLamp::CctLamp( uint16_t channelWarm, bool autoWrite )
   _x          	=  	0;
   _y          	=  	0;
   _intensity  	=  	0;
-  _cct			=	50;
+  _cct			=	127;
   _channel	 	=  	channelWarm;
   _channelWarm 	=  	channelWarm;
   _channelCool 	=  	channelWarm + 1;
@@ -44,7 +44,7 @@ CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
   _x          	=  	0;
   _y          	=  	0;
   _intensity  	=  	0;
-  _cct			=	50;
+  _cct			=	127;
   _channel	 	=  	channelWarm;
   _channelWarm 	=  	channelWarm;
   _channelCool 	=  	channelCool;
@@ -66,7 +66,7 @@ CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, ui
   _x          	=  	x;
   _y          	=  	y;
   _intensity  	=  	0;
-  _cct			=	50;
+  _cct			=	127;
   _channel	 	=  	channelWarm;
   _channelWarm 	=  	channelWarm;
   _channelCool 	=  	channelCool;
@@ -89,7 +89,7 @@ CctLamp::~CctLamp()
 
 /* VOID FUNCTIONS */
 
-/** Immediatily sets the color temperature of the lamp (range 0 - 100). An ongoing cct animation is stopped unless stopAnimation is set to false.
+/** Immediatily sets the color temperature of the lamp (range 0 - 255). An ongoing cct animation is stopped unless stopAnimation is set to false.
 	Make sure to also set the intensity to a value that is greater than 0, 
 	otherwise you won't see the effect of the color temperature change.
  **/
@@ -97,7 +97,7 @@ void CctLamp::setCct( uint8_t cct, bool stopAnimation )
 {
 	if( cct != _cct )
 	{
-		_cct = constrain( cct, 0, 100 );
+		_cct = constrain( cct, 0, 255 );
 		_hasNewValue = true;
 		if (stopAnimation)
 		{
@@ -122,13 +122,13 @@ void CctLamp::setIntensityCool( uint8_t intensityCool )
 	}
 }
 
-/** Animates the color temperature of the lamp (range 0 - 100) with its duration in millis.
+/** Animates the color temperature of the lamp (range 0 - 255) with its duration in millis.
 	Make sure to also set the intensity to a value that is greater than 0, 
 	otherwise you won't see the effect of the color temperature change.
  **/
 void CctLamp::cctTo( uint8_t cct, uint32_t duration )
 {
-	cctAnim->startAnimation( _cct, constrain(cct, 0, 100), duration );
+	cctAnim->startAnimation( _cct, constrain(cct, 0, 255), duration );
 }
 
 /** Animates CCT Lamp with all its values; 
@@ -136,7 +136,7 @@ intensity, cct value and duration in millis **/
 void CctLamp::cctLampTo( uint8_t intens, uint8_t cct, uint32_t duration )
 {	
 	intensityAnim->startAnimation( _intensity, constrain(intens, 0, 255), duration );
-	cctAnim->startAnimation( _cct, constrain(cct, 0, 100), duration );
+	cctAnim->startAnimation( _cct, constrain(cct, 0, 255), duration );
 }
 
 /** Sets the animation type for a CCT Lamp. The available animation types are LINEAR (no easing) and QUADRATIC. 
@@ -204,7 +204,7 @@ uint8_t CctLamp::getIntensityCool()
 	return _intensityCool;
 }
 
-/** Returns the current color temperature of the LED (range 0 - 100) **/
+/** Returns the current color temperature of the LED (range 0 - 255) **/
 uint8_t CctLamp::getCct()
 {
 	return _cct;
@@ -217,14 +217,14 @@ uint8_t CctLamp::calculateIntensityWarm()
 	//uint8_t animatedIntensityCool = 0;
 	
 	/* first calculate based on the cct value */
-	if( _cct <= 50 )
+	if( _cct <= 127 )
 	{
-	  //animatedIntensityCool  =  map( _cct, 0, 50, 0, 255 );
+	  //animatedIntensityCool  =  map( _cct, 0, 127, 0, 255 );
 	  animatedIntensityWarm  =  255;
 	}
 	else
 	{
-	  animatedIntensityWarm  =  map( _cct, 50, 100, 255, 0);
+	  animatedIntensityWarm  =  map( _cct, 127, 255, 255, 0);
 	  //animatedIntensityCool  =  255;
 	}
 	
@@ -241,14 +241,14 @@ uint8_t CctLamp::calculateIntensityCool()
 	uint8_t animatedIntensityCool = 0;
 	
 	/* first calculate based on the cct value */
-	if( _cct <= 50 )
+	if( _cct <= 127 )
 	{
-	  animatedIntensityCool  =  map( _cct, 0, 50, 0, 255 );
+	  animatedIntensityCool  =  map( _cct, 0, 127, 0, 255 );
 	  //animatedIntensityWarm  =  255;
 	}
 	else
 	{
-	  //animatedIntensityWarm  =  map( _cct, 50, 100, 255, 0);
+	  //animatedIntensityWarm  =  map( _cct, 127, 255, 255, 0);
 	  animatedIntensityCool  =  255;
 	}
 	
