@@ -12,12 +12,6 @@
 
 #include "ColorLamp.h"
 
-/** hueAnim is the object that is used to manage the hue animations **/
-Animation * hueAnim;
-
-/** saturationAnim is the object that is used to manage the saturation animations **/
-Animation * saturationAnim;
-
 /* CONSTRUCTORS */
 
 /** Empty ColorLamp Constructor. If you use this, make sure to set the channel manually afterwards using setChannel(); 

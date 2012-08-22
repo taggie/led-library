@@ -92,8 +92,8 @@ class LED
   protected:
   	bool _on, _autoWrite, _hasNewValue;
     uint16_t _channel; 
-    uint8_t _intensity;
     uint16_t _x, _y;
+	uint8_t _intensity;
 };
 
 #endif

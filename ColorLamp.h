@@ -67,7 +67,13 @@ class ColorLamp:public LED
 	bool isAnimating();
 	bool isAnimating(uint8_t param);
 
-  private:
+  private:  
+	/** hueAnim is the object that is used to manage the hue animations **/
+	Animation * hueAnim;
+
+	/** saturationAnim is the object that is used to manage the saturation animations **/
+	Animation * saturationAnim;
+
 	uint16_t _channelRed; 
 	uint16_t _channelGreen; 
     uint16_t _channelBlue; 

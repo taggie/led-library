@@ -47,13 +47,13 @@ class Animation
 	bool isAnimating();
 	
   protected:
-	uint16_t	_startValue;
-	uint16_t	_endValue;
 	uint32_t	_startTime;
 	uint32_t	_endTime;
+	uint16_t	_startValue;
+	uint16_t	_endValue;
 	uint8_t	_isAnimating;
-	
 	uint8_t	_animType;
+	
 	bool _easeIn;
 	bool _easeOut;
 	bool	_shortcutThroughZero;
