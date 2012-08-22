@@ -45,7 +45,7 @@ LED::LED( uint16_t channel, bool autoWrite )
   _on		 	=	true;
   _autoWrite	=	autoWrite;
   intensityAnim  =  new Animation(); 
- 
+  
   if ( _autoWrite )
   {
 	pinMode( _channel, OUTPUT );

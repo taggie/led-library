@@ -42,6 +42,9 @@ class CctLamp:public LED
 	bool isAnimating(uint8_t param);
 
   private:
+	/** cctAnim is the object that is used to manage the color temperature animations **/
+	Animation * cctAnim;
+  
 	void setIntensityWarm( uint8_t intensityWarm );
 	void setIntensityCool( uint8_t intensityCool );
 	

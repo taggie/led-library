@@ -12,9 +12,6 @@
 #include "CctLamp.h"
 #include "Calculate.h"
 
-/** cctAnim is the object that is used to manage the color temperature animations **/
-Animation * cctAnim;
-
 /* CONSTRUCTORS */
 
 CctLamp::CctLamp( uint16_t channelWarm, bool autoWrite )
