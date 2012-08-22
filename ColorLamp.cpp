@@ -303,13 +303,6 @@ void ColorLamp::update()
 		setIntensity( intensityAnim->getValue(), false );
 	}
 	
-	/* If there is no animation going on and the device is turned off,
-	   and the intensity is not set to 0, turn the LED off */
-	if( !intensityAnim->isAnimating() && !hueAnim->isAnimating() && !saturationAnim->isAnimating() && !_on && _intensity > 0 )
-	{
-		setIntensity( 0, false );
-	}
-	
 	if ( _hasNewValue )
 	{
 		/*  Update the RGB values based on HSB to reflect the changes for actuation 

@@ -88,13 +88,6 @@ void LED::update()
 	{
 		setIntensity( intensityAnim->getValue(), false );
 	}
-	/* If there is no animation going on, and the device is turned off,
-		and the intensity is not set to 0, turn the LED off
-	*/
-	if( !intensityAnim->isAnimating() && !_on && _intensity > 0 )
-	{
-		setIntensity( 0, false );
-	}
 	
 	/* Here we actually actuate the light if autowrite is on */
 	if( _autoWrite )
