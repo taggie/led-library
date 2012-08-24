@@ -51,6 +51,9 @@ CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
   _on		 	=	true;
   _autoWrite	=	autoWrite;
 
+  intensityAnim  =  new Animation();  
+  cctAnim  =  new Animation();
+  
   if ( _autoWrite )
   {
 	pinMode( _channelWarm, OUTPUT );
@@ -73,6 +76,9 @@ CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite, ui
   _on		 	=	true;
   _autoWrite	=	autoWrite;
 
+  intensityAnim  =  new Animation();  
+  cctAnim  =  new Animation();
+  
   if ( _autoWrite )
   {
 	pinMode( _channelWarm, OUTPUT );
