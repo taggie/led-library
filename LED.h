@@ -41,7 +41,6 @@ static const uint8_t PARAM_CCT			= 1;
 static const uint8_t PARAM_HUE			= 2;
 static const uint8_t PARAM_SATURATION	= 3;
 
-
 /*! \mainpage The Arduino LED Library
  *	This Arduino Library is used to manage and control LEDs from the Arduino environment. It allows animation and actuation of single channel LEDs 
 	as well as RGB and CCT (color temperature) LEDs.  <br /><br />
@@ -82,6 +81,7 @@ class LED
     
     uint8_t getChannel();
     uint8_t getIntensity();
+	uint8_t getTargetIntensity();
     
     uint16_t getX();
     uint16_t getY();

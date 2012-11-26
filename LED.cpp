@@ -258,6 +258,13 @@ uint8_t LED::getIntensity()
 	}
 }
 
+/** Returns the target value of the Intensity animation
+**/
+uint8_t LED::getTargetIntensity()
+{
+	return intensityAnim->getEndValue();
+}
+
 /* uint16_t FUNCTIONS */
 uint16_t LED::getX()
 {

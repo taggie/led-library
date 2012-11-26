@@ -216,6 +216,13 @@ uint8_t CctLamp::getCct()
 	return _cct;
 }
 
+/** Returns the target value of the Cct animation
+**/
+uint8_t CctLamp::getTargetCct()
+{
+	return cctAnim->getEndValue();
+}
+
 uint8_t CctLamp::calculateIntensityWarm()
 {
 	/* Calculate the Warm and Cool values based on the newly calculated cct and intensity values */
