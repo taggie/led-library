@@ -31,7 +31,7 @@
   	static const uint8_t EXPONENTIAL 	= 2;
   	static const uint8_t CIRCULAR 		= 3;
   	static const uint8_t SINUS 			= 4;
-	
+
 
 class Animation
 {
@@ -41,6 +41,7 @@ class Animation
 	~Animation();
 
 	uint16_t getValue();
+	uint16_t getEndValue();
 	void stopAnimation();
 	void startAnimation(int16_t startValue, int16_t endValue, uint32_t duration, bool throughZero = false);
 	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );

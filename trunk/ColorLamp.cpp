@@ -287,6 +287,15 @@ void ColorLamp::setAnimationType( uint8_t animType, bool easeIn, bool easeOut )
 	saturationAnim->setAnimationType( animType, easeIn, easeOut );
 }
 
+/** CURRENTLY UNUSED -- Sets the ColorFade type for a colorLamp. The available fade types are HSB_FADE and RGB_FADE
+	In case of HSB, fade happen along the Hue Saturation and Brightness axis, which allows
+	you to go through a color wheel. In RGB mode the red green and blue values fade to their destination individually.
+ **/
+void ColorLamp::setColorFadeType( uint8_t fadeType )
+{
+	_colorFadeType = fadeType;
+}
+
 /** Update Function; should be called every loop to set, animate and actuate the lamps **/
 void ColorLamp::update()
 {
@@ -399,10 +408,24 @@ uint8_t ColorLamp::getHue()
 	return _hue;
 }
 
+/** Returns the target value of the Hue animation
+**/
+uint8_t ColorLamp::getTargetHue()
+{
+	return hueAnim->getEndValue();
+}
+
 /** This function returns the current SATURATION output value. **/
 uint8_t ColorLamp::getSaturation()
 {
 	return _saturation;
+}
+
+/** Returns the target value of the Saturation animation
+**/
+uint8_t ColorLamp::getTargetSaturation()
+{
+	return saturationAnim->getEndValue();
 }
 
 /** This function returns the current INTENSITY output value. **/

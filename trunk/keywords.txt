@@ -46,14 +46,18 @@ getChannelRed	KEYWORD2
 getChannelGreen	KEYWORD2
 getChannelBlue	KEYWORD2
 getIntensity	KEYWORD2
+getTargetIntensity	KEYWORD2
 getCct	KEYWORD2
+getTargetCct	KEYWORD2
 getIntensityWarm	KEYWORD2
 getIntensityCool	KEYWORD2
 getRed	KEYWORD2
 getGreen	KEYWORD2
 getBlue	KEYWORD2
 getHue	KEYWORD2
+getTargetHue	KEYWORD2
 getSaturation	KEYWORD2
+getTargetSaturation	KEYWORD2
 getX	KEYWORD2
 getY	KEYWORD2
 

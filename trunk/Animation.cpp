@@ -81,6 +81,11 @@ void Animation::setAnimationType( uint8_t animType, bool easeIn, bool easeOut)
 	_easeOut = easeOut;
 }
 
+uint16_t Animation::getEndValue() 
+{
+	return _endValue;
+}
+
 uint16_t Animation::getValue() 
 {
 	uint16_t animatedValue	=	0;

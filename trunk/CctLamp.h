@@ -32,6 +32,7 @@ class CctLamp:public LED
 	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );
 	
 	uint8_t getCct();
+	uint8_t	getTargetCct();
     uint8_t getIntensityWarm();
 	uint8_t getIntensityCool();
 	

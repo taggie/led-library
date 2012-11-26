@@ -15,6 +15,10 @@
 
 #include "LED.h"
 
+/* Constants to determine the colorFadeType */
+static const uint8_t HSB_FADE 			= 0;
+static const uint8_t RGB_FADE 			= 1;
+
 /** The ColorLamp class is used to manage RGB LEDs with 3 channels (R,G and B) **/
 class ColorLamp:public LED
 {
@@ -50,6 +54,7 @@ class ColorLamp:public LED
 	*/
 	
 	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );
+	void setColorFadeType( uint8_t animType = HSB_FADE );
 	void setCommonAnode( bool commonAnode = true);
 	
 	uint8_t getRed();
@@ -57,7 +62,9 @@ class ColorLamp:public LED
 	uint8_t getBlue();
 	
 	uint8_t getHue();
+	uint8_t getTargetHue();
 	uint8_t getSaturation();
+	uint8_t getTargetSaturation();
 	uint8_t getBrightness();
 	
     uint16_t getChannelRed();
@@ -74,6 +81,8 @@ class ColorLamp:public LED
 	/** saturationAnim is the object that is used to manage the saturation animations **/
 	Animation * saturationAnim;
 
+	uint8_t _colorFadeType; // CURRENTLY UNUSED
+	
 	uint16_t _channelRed; 
 	uint16_t _channelGreen; 
     uint16_t _channelBlue; 
@@ -81,7 +90,7 @@ class ColorLamp:public LED
 	uint8_t * rgbToHsb ( uint8_t r, uint8_t g, uint8_t b, uint8_t hsv[3] ); 
 	uint8_t * hsbToRgb ( uint8_t h, uint8_t s, uint8_t b, uint8_t rgb[3] );
 	
-	uint8_t _red ;
+	uint8_t _red;
 	uint8_t _green;
 	uint8_t _blue;
 	
