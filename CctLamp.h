@@ -25,6 +25,9 @@ class CctLamp:public LED
     ~CctLamp();
     
 	void update();
+	
+	void setChannel( uint16_t channelWarm, uint16_t channelCool = 0);
+	
 	void cctTo( uint8_t cct , uint32_t duration = DEFAULT_DURATION);
 	void cctLampTo( uint8_t intens , uint8_t cct, uint32_t duration = DEFAULT_DURATION);
     void setCct( uint8_t cct, bool stopAnimation = true );

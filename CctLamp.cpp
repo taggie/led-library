@@ -95,6 +95,26 @@ CctLamp::~CctLamp()
 
 /* VOID FUNCTIONS */
 
+/** Allows you to set the channel of the LED. if autoWrite is on, this is the Arduino pin that is actuated
+	If only one argument is supplied, the green and blue channel are the subsequent channel numbers
+**/
+void CctLamp::setChannel( uint16_t channelWarm, uint16_t channelCool)
+{
+	if ( channelCool == 0 ) // This is the case if the user does not supply arguments for cool led
+	{
+		channelCool = channelWarm + 1;
+	}
+	_channel	=	channelWarm;
+	_channelWarm 	=  	channelWarm;
+	_channelCool 	=  	channelCool;
+	
+	if ( _autoWrite )
+	{
+		pinMode( _channelWarm, OUTPUT );
+		pinMode( _channelCool, OUTPUT );
+	}
+}
+
 /** Immediatily sets the color temperature of the lamp (range 0 - 255). An ongoing cct animation is stopped unless stopAnimation is set to false.
 	Make sure to also set the intensity to a value that is greater than 0, 
 	otherwise you won't see the effect of the color temperature change.
