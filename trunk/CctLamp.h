@@ -19,8 +19,7 @@
 class CctLamp:public LED
 {
   public:
-	CctLamp( uint16_t channelWarm = 1 , bool autoWrite = true );
-    CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite );
+    CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite = true );
 	CctLamp( uint16_t channelWarm , uint16_t channelCool , bool autoWrite , uint16_t x, uint16_t y );
     ~CctLamp();
     

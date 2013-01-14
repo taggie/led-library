@@ -14,31 +14,6 @@
 
 /* CONSTRUCTORS */
 
-CctLamp::CctLamp( uint16_t channelWarm, bool autoWrite )
-{
-  _x          	=  	0;
-  _y          	=  	0;
-  _intensity  	=  	0;
-  _cct			=	127;
-  _channel	 	=  	channelWarm;
-  _channelWarm 	=  	channelWarm;
-  _channelCool 	=  	channelWarm + 1;
-  _on		 	=	true;
-  _autoWrite	=	autoWrite;
-  
-  intensityAnim  =  new Animation();  
-  cctAnim  =  new Animation();
-  
-  if ( _autoWrite )
-  {
-	pinMode( _channelWarm, OUTPUT );
-	pinMode( _channelCool, OUTPUT );
-  }
-  
-  _hasNewValue = true;
-  update();
-}
-
 CctLamp::CctLamp( uint16_t channelWarm, uint16_t channelCool, bool autoWrite )
 {
   _x          	=  	0;
@@ -264,6 +239,7 @@ uint8_t CctLamp::calculateIntensityWarm()
 	/* second multiply with intensity to determine the overall level */
 	animatedIntensityWarm  =  uint8_t ( (animatedIntensityWarm * _intensity) / 255 );
 	//animatedIntensityCool  =  uint8_t ( (animatedIntensityCool * _intensity) / 255 );
+	
 	return animatedIntensityWarm;
 }
 

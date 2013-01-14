@@ -1,10 +1,9 @@
 #include <CctLamp.h>
 
-/** Create a lamp object with the warm white color on channel 5
-    The cool white channel is automatically set warmWhite + 1 (6 in this case)
-    You may also set     
+/** Create a lamp object with the warm white color on channel 5 and cool on channel 6
+    Set autoWrite to true, so it writes it to the Arduino Pins
 **/
-CctLamp * lamp  =  new CctLamp( 5 ); 
+CctLamp * lamp  =  new CctLamp( 5, 6, true ); 
 
 /** Or create an Array of LEDs **/
 // Cct * lamps[10]; 
@@ -26,7 +25,7 @@ void loop()
   {
     if (lamp->getCct() == 0) // Returns the current CCT Value of the LED
     {
-      lamp->cctTo( 100, 2000 ); // Sets the desired CCT value and the time (in millis) it should take to get there
+      lamp->cctTo( 255, 2000 ); // Sets the desired CCT value and the time (in millis) it should take to get there
     }
     else {
       lamp->cctTo( 0, 2000 );
