@@ -22,18 +22,19 @@ void setup()
 /** Optionally, you may set the animation type for our LED to QUADRATIC with easing in and/or out;
     The default animation is LINEAR without easing **/
 //   led1->setAnimationType( QUADRATIC , true , false );  
+  led1->intensityTo( 255, 5000 );
 }
 
 void loop()
 {
   if( !led1->isAnimating()) // Returns true if the LED is in an animation
   {
-    if (led1->getIntensity() == 0) // Returns the current intensity of the LED
+    if (led1->getIntensity() == 50) // Returns the current intensity of the LED
     {
-      led1->intensityTo( 255, 2000 ); // Sets the desired LED value and the time (in millis) it should take to get there
+      led1->intensityTo( 255, 1000 ); // Sets the desired LED value and the time (in millis) it should take to get there
     }
     else {
-      led1->intensityTo( 0, 2000 );
+      led1->intensityTo( 50, 5000 );
     }
   }
   // Always call the update function; if autoWrite is on, the Arduino will write the current intensity to the set channel 
