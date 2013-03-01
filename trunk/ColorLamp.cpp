@@ -111,7 +111,7 @@ void ColorLamp::setChannel( uint16_t channelRed, uint16_t channelGreen, uint16_t
 	Conversion back to RGB happens during the update() function.
 	Any ongoing animations are stopped unless 'stopanimation' is set to false.
 **/
-void ColorLamp::setRGB( uint8_t r, uint8_t g, uint8_t b, bool stopAnimation )
+void ColorLamp::setRGB( int r, int g, int b, bool stopAnimation )
 {
 	if ( _red != r || _green != g || _blue != b ) 
 	{	
@@ -151,7 +151,7 @@ void ColorLamp::setBlue( uint8_t b, bool stopAnimation )
 	Values are changed immediatily, but only actuated in the update() function. 
 	Any ongoing animations are stopped unless 'stopAnimation' is set to false.
 **/
-void ColorLamp::setHSB( uint8_t h, uint8_t s, uint8_t b, bool stopAnimation )
+void ColorLamp::setHSB( int h, int s, int b, bool stopAnimation )
 {
 	if ( _hue != h || _saturation != s || _intensity != b ) 
 	{
@@ -172,7 +172,7 @@ void ColorLamp::setHSB( uint8_t h, uint8_t s, uint8_t b, bool stopAnimation )
 	Values are changed immediatily, but only actuated in the update() function.
 	maintains the other current variables. Any ongoing hue animation is stopped unless 'stopAnimation' is set to false.
 **/
-void ColorLamp::setHue( uint8_t h, bool stopAnimation )
+void ColorLamp::setHue( int h, bool stopAnimation )
 {
 	if( h != _hue )
 	{
@@ -189,7 +189,7 @@ void ColorLamp::setHue( uint8_t h, bool stopAnimation )
 	maintains the other current variables. Any ongoing saturation animation is stopped unless 'stopAnimation' is set to false.
 	Values are changed immediatily, but only actuated in the update() function.
 **/
-void ColorLamp::setSaturation( uint8_t s, bool stopAnimation )
+void ColorLamp::setSaturation( int s, bool stopAnimation )
 {
 	if( s != _saturation )
 	{
@@ -207,7 +207,7 @@ void ColorLamp::setSaturation( uint8_t s, bool stopAnimation )
 	When animating RGB; the values are first converted to HSB
 	Conversion back to RGB happens during the update function.
 **/
-void ColorLamp::rgbTo( uint8_t rTo, uint8_t gTo, uint8_t bTo, uint32_t duration )
+void ColorLamp::rgbTo( int rTo, int gTo, int bTo, uint32_t duration )
 {
 	uint8_t hsb[3] = { 0 , 0 , 0 };
 	uint8_t * hsbArray = rgbToHsb(rTo, gTo, bTo, hsb );
@@ -244,7 +244,7 @@ void ColorLamp::blueTo( uint8_t bTo, uint32_t duration )
 	shortcutThroughZero allows use of the hue color wheel as expected. If the shortest route from start value to end value goes through zero (red)
 	we will take this route by default. Set it to false if you wish to take the longer route.
 	**/
-void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration, bool shortcutThroughZero )
+void ColorLamp::hsbTo( int hTo, int sTo, int bTo, uint32_t duration, bool shortcutThroughZero )
 {	
 	hueAnim->startAnimation( _hue, constrain(hTo, 0, 255), duration, shortcutThroughZero );
 	saturationAnim->startAnimation( _saturation, constrain(sTo, 0, 255), duration );
@@ -256,7 +256,7 @@ void ColorLamp::hsbTo( uint8_t hTo, uint8_t sTo, uint8_t bTo, uint32_t duration,
 	shortcutThroughZero allows use of the hue color wheel as expected. If the shortest route from start value to end value goes through zero (red)
 	we will take this route by default. Set it to false if you wish to take the longer route.
 	**/
-void ColorLamp::hueTo( uint8_t hTo, uint32_t duration, bool shortcutThroughZero )
+void ColorLamp::hueTo( int hTo, uint32_t duration, bool shortcutThroughZero )
 {
 	hueAnim->startAnimation( _hue, constrain(hTo, 0, 255), duration, shortcutThroughZero );
 }
@@ -264,7 +264,7 @@ void ColorLamp::hueTo( uint8_t hTo, uint32_t duration, bool shortcutThroughZero 
 /** This function is used for animating to a desired Saturation value while maintaining Hue and Brightness values.
 	The duration of the animation can be set in millis().
 	**/
-void ColorLamp::saturationTo( uint8_t sTo, uint32_t duration )
+void ColorLamp::saturationTo( int sTo, uint32_t duration )
 {
 	saturationAnim->startAnimation( _saturation, constrain(sTo, 0, 255), duration );
 }
@@ -438,11 +438,11 @@ uint8_t ColorLamp::getBrightness()
 by robert Atkins in the RGB Converter Library
 https://github.com/ratkins/RGBConverter
 */
-uint8_t * ColorLamp::rgbToHsb(uint8_t r, uint8_t g, uint8_t b, uint8_t hsb[] ) 
+uint8_t * ColorLamp::rgbToHsb(int r, int g, int b, uint8_t hsb[] ) 
 {
-	float rd = (float) r/255;
-    float gd = (float) g/255;
-    float bd = (float) b/255;
+	float rd = (float) constrain(r,0,255)/255;
+    float gd = (float) constrain(g,0,255)/255;
+    float bd = (float) constrain(b,0,255)/255;
     float maxVal = max(rd, max(gd, bd));
     float minVal = min(rd, min(gd, bd));
     float h = maxVal;
@@ -479,9 +479,16 @@ uint8_t * ColorLamp::rgbToHsb(uint8_t r, uint8_t g, uint8_t b, uint8_t hsb[] )
 by Elco Jacobs in the ShiftPWM Library
 https://github.com/elcojacobs/ShiftPWM
 */
-uint8_t * ColorLamp::hsbToRgb( uint8_t h, uint8_t s, uint8_t v, uint8_t rgb[] ) 
+uint8_t * ColorLamp::hsbToRgb( int h, int s, int v, uint8_t rgb[] ) 
 {	
-	uint8_t r,g,b;
+	uint8_t r = 0;
+	uint8_t g = 0;
+	uint8_t b = 0;
+	
+	h = constrain(h,0,255);
+	s = constrain(s,0,255);
+	v = constrain(v,0,255);
+	
 	uint16_t hue 	= map(h,0,255,0,359);
 	uint16_t phase 	= hue/60;
 	uint16_t bottom = ( (255 - s) * (float(v) / 255.0));
@@ -561,6 +568,9 @@ bool ColorLamp::isAnimating(uint8_t param)
 		break;
 		case PARAM_SATURATION:
 			return saturationAnim->isAnimating();
+		break;
+		default:
+			return false;
 		break;
 	}
 }

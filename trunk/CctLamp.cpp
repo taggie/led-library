@@ -94,7 +94,7 @@ void CctLamp::setChannel( uint16_t channelWarm, uint16_t channelCool)
 	Make sure to also set the intensity to a value that is greater than 0, 
 	otherwise you won't see the effect of the color temperature change.
  **/
-void CctLamp::setCct( uint8_t cct, bool stopAnimation )
+void CctLamp::setCct( int cct, bool stopAnimation )
 {
 	if( cct != _cct )
 	{
@@ -127,14 +127,14 @@ void CctLamp::setIntensityCool( uint8_t intensityCool )
 	Make sure to also set the intensity to a value that is greater than 0, 
 	otherwise you won't see the effect of the color temperature change.
  **/
-void CctLamp::cctTo( uint8_t cct, uint32_t duration )
+void CctLamp::cctTo( int cct, uint32_t duration )
 {
 	cctAnim->startAnimation( _cct, constrain(cct, 0, 255), duration );
 }
 
 /** Animates CCT Lamp with all its values; 
 intensity, cct value and duration in millis **/
-void CctLamp::cctLampTo( uint8_t intens, uint8_t cct, uint32_t duration )
+void CctLamp::cctLampTo( int intens, int cct, uint32_t duration )
 {	
 	intensityAnim->startAnimation( _intensity, constrain(intens, 0, 255), duration );
 	cctAnim->startAnimation( _cct, constrain(cct, 0, 255), duration );

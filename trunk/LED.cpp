@@ -88,7 +88,6 @@ void LED::update()
 	{
 		setIntensity( intensityAnim->getValue(), false );
 	}
-	
 	/* Here we actually actuate the light if autowrite is on */
 	if( _autoWrite )
 	{
@@ -110,18 +109,17 @@ void LED::update()
 	Values are changed immediatily, but only actuated in the update() function.
 	An ongoing intensity animation is stopped unless stopAnimation is set to false. 
 **/
-void LED::setBrightness( uint8_t intensity, bool stopAnimation )
+void LED::setBrightness( int intensity, bool stopAnimation )
 {
 	setIntensity(intensity, stopAnimation);
 }
 
-void LED::setIntensity( uint8_t intensity, bool stopAnimation )
+void LED::setIntensity( int intensity, bool stopAnimation )
 {
 	if( intensity != _intensity )
 	{
 		_intensity = constrain( intensity, 0, 255 );
 		_hasNewValue = true;
-		
 		if (stopAnimation)
 		{
 			intensityAnim->stopAnimation();
@@ -177,7 +175,7 @@ void LED::setToggle( bool toggle )
 /** Animates the intensity of the LED to the desired value (range 0 - 255). 
 	Duration of the animation can be set in millis.
 **/
-void LED::intensityTo( uint8_t to, uint32_t duration )
+void LED::intensityTo( int to, uint32_t duration )
 {
 	intensityAnim->startAnimation( _intensity, constrain(to, 0, 255), duration );
 }
@@ -186,9 +184,9 @@ void LED::intensityTo( uint8_t to, uint32_t duration )
 	At the start of the animation the LED will jump to the set start value.
 	Duration of the animation can be set in millis.
 **/
-void LED::intensityFromTo( uint8_t from, uint8_t to, uint32_t duration )
+void LED::intensityFromTo( int from, int to, uint32_t duration )
 {
-	intensityAnim->startAnimation( from, constrain(to, 0, 255), duration, LINEAR);
+	intensityAnim->startAnimation(  constrain(from, 0, 255), constrain(to, 0, 255), duration );
 }
 
 void LED::moveTo( uint16_t newX, uint16_t newY, uint32_t duration )
@@ -262,6 +260,7 @@ uint8_t LED::getIntensity()
 **/
 uint8_t LED::getTargetIntensity()
 {
+	// return constrain( intensityAnim->getEndValue(), 0, 255 );
 	return intensityAnim->getEndValue();
 }
 

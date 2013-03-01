@@ -40,8 +40,8 @@ class Animation
 	Animation();
 	~Animation();
 
-	uint16_t getValue();
-	uint16_t getEndValue();
+	uint8_t getValue();
+	uint8_t getEndValue();
 	void stopAnimation();
 	void startAnimation(int16_t startValue, int16_t endValue, uint32_t duration, bool throughZero = false);
 	void setAnimationType( uint8_t animType = LINEAR, bool easeIn = true, bool easeOut = true );
@@ -50,14 +50,14 @@ class Animation
   protected:
 	uint32_t	_startTime;
 	uint32_t	_endTime;
-	uint16_t	_startValue;
-	uint16_t	_endValue;
+	uint8_t	_startValue;
+	uint8_t	_endValue;
 	uint8_t	_isAnimating;
 	uint8_t	_animType;
 	
 	bool _easeIn;
 	bool _easeOut;
-	bool	_shortcutThroughZero;
+	bool _shortcutThroughZero;
 };
 
 #endif
