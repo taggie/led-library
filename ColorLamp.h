@@ -31,17 +31,17 @@ class ColorLamp:public LED
 	
 	void update();
     
-	void rgbTo( uint8_t r, uint8_t g, uint8_t b, uint32_t duration = DEFAULT_DURATION);
-	void hsbTo( uint8_t h, uint8_t s, uint8_t b, uint32_t duration = DEFAULT_DURATION, bool shortcutThroughZero = true);
+	void rgbTo( int r, int g, int b, uint32_t duration = DEFAULT_DURATION);
+	void hsbTo( int h, int s, int b, uint32_t duration = DEFAULT_DURATION, bool shortcutThroughZero = true);
 	
-	void hueTo( uint8_t hTo,  		uint32_t duration = DEFAULT_DURATION, bool shortcutThroughZero = true);
-	void saturationTo( uint8_t sTo, uint32_t duration = DEFAULT_DURATION);
+	void hueTo( int hTo,  		uint32_t duration = DEFAULT_DURATION, bool shortcutThroughZero = true);
+	void saturationTo( int sTo, uint32_t duration = DEFAULT_DURATION);
 	
-	void setRGB( uint8_t r, uint8_t g, uint8_t b, bool stopAnimation = true );
-	void setHSB( uint8_t h, uint8_t s, uint8_t b, bool stopAnimation = true );
+	void setRGB( int r, int g, int b, bool stopAnimation = true );
+	void setHSB( int h, int s, int b, bool stopAnimation = true );
 	
-	void setHue( uint8_t h , bool stopAnimation = true);
-	void setSaturation( uint8_t s , bool stopAnimation = true);
+	void setHue( int h , bool stopAnimation = true);
+	void setSaturation( int s , bool stopAnimation = true);
 	
 	/* Implemented, but not yet functioning properly. Conversion through HSB goes wrong
 	void redTo(uint8_t r,  	uint32_t duration = DEFAULT_DURATION);
@@ -87,8 +87,8 @@ class ColorLamp:public LED
 	uint16_t _channelGreen; 
     uint16_t _channelBlue; 
 	
-	uint8_t * rgbToHsb ( uint8_t r, uint8_t g, uint8_t b, uint8_t hsv[3] ); 
-	uint8_t * hsbToRgb ( uint8_t h, uint8_t s, uint8_t b, uint8_t rgb[3] );
+	uint8_t * rgbToHsb ( int r, int g, int b, uint8_t hsv[3] ); 
+	uint8_t * hsbToRgb ( int h, int s, int b, uint8_t rgb[3] );
 	
 	uint8_t _red;
 	uint8_t _green;

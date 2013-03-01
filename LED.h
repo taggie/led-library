@@ -60,8 +60,8 @@ class LED
     ~LED();
     
     void update();
-	void setBrightness( uint8_t intensity, bool stopAnimation = true );
-    void setIntensity( uint8_t intensity, bool stopAnimation = true );
+	void setBrightness( int intensity, bool stopAnimation = true );
+    void setIntensity( int intensity, bool stopAnimation = true );
     void setX( uint16_t x );
     void setY( uint16_t y );
     void setPosition( uint16_t x, uint16_t y );
@@ -70,8 +70,8 @@ class LED
 	
     void toggle();
 	void setToggle( bool toggle );
-    void intensityTo( uint8_t to, uint32_t duration = DEFAULT_DURATION );
-    void intensityFromTo( uint8_t from, uint8_t to, uint32_t duration = DEFAULT_DURATION );
+    void intensityTo( int to, uint32_t duration = DEFAULT_DURATION );
+    void intensityFromTo( int from, int to, uint32_t duration = DEFAULT_DURATION );
     void moveTo( uint16_t newX, uint16_t newY, uint32_t duration = DEFAULT_DURATION );
 
     bool isOn();

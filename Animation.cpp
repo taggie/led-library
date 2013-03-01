@@ -21,8 +21,8 @@ Animation::Animation()
 	_endTime		= 	0;
 	_isAnimating	=	false;
 	_animType		= 	0;
-	_easeIn			= true;
-	_easeOut		= true;
+	_easeIn			= 	true;
+	_easeOut		= 	true;
 }
 
 Animation::~Animation()
@@ -42,7 +42,7 @@ void Animation::startAnimation(int16_t startValue, int16_t endValue, uint32_t du
 	_startTime		= 	millis();
 	_endTime		= 	millis() + duration;
 	_isAnimating	=	true;
-	_shortcutThroughZero = throughZero;
+	_shortcutThroughZero = throughZero; 
 	
 	/*
 	Shortcut through zero allows use of the hue color wheel as expected. 
@@ -66,7 +66,6 @@ void Animation::startAnimation(int16_t startValue, int16_t endValue, uint32_t du
 			_shortcutThroughZero = false;
 		}
 	}
-	
 }
 
 void Animation::stopAnimation() 
@@ -81,12 +80,12 @@ void Animation::setAnimationType( uint8_t animType, bool easeIn, bool easeOut)
 	_easeOut = easeOut;
 }
 
-uint16_t Animation::getEndValue() 
+uint8_t Animation::getEndValue() 
 {
-	return _endValue;
+	return uint8_t(_endValue);
 }
 
-uint16_t Animation::getValue() 
+uint8_t Animation::getValue() 
 {
 	uint16_t animatedValue	=	0;
 	//Check if the animation is still valid
@@ -124,9 +123,9 @@ uint16_t Animation::getValue()
 				animatedValue -= 255;
 			}
 		}
-		return animatedValue;
+		return uint8_t(animatedValue);
 	}
-	else if( millis() >= _endTime)
+	else
 	{
 		_isAnimating = false;
 		return _endValue;
